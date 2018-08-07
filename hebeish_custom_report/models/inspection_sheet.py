@@ -116,15 +116,8 @@ class InspectionSheet(models.Model):
 
     micro_duct_pipe = fields.One2many('micro.duct.pipe','report_id','Test Results')
 
-
-    # @api.model
-    # def create(self, vals):
-    #     my_sequence = self.env['ir.sequence'].next_by_code('inspection.sheet')
-    #     print my_sequence
-    #     vals['certificate_no'] = my_sequence
-    #     vals['name'] = my_sequence
-    #     # self.write({'certificate_no': my_sequence})
-    #     return super(InspectionSheet, self).create(vals)
+    first_approved_by = fields.Many2one('res.users', string='First Approved')
+    second_approved_by = fields.Many2one('res.users', string='Second Approved')
 
     @api.onchange('product_code')
     def onchange_product_code(self):
@@ -212,13 +205,13 @@ class InspectionSheet(models.Model):
     @api.multi
     def action_first_approval(self):
         for order in self:
-            order.state = 'waiting_second_approval'
+            order.write({'state': 'waiting_second_approval', 'first_approved_by': self._uid})
         return True
 
     @api.multi
     def action_second_approval(self):
         for order in self:
-            order.state = 'approved'
+            order.write({'state': 'approved', 'second_approved_by': self._uid})
             sequence = self.env['ir.sequence'].sudo().next_by_code('inspection.sheet')
             order.certificate_no = sequence
             order.name = sequence
@@ -323,7 +316,7 @@ class mrp_production_inherits(models.Model):
 
     _inherit = "mrp.production"
 
-    report_ids = fields.One2many('inspection.sheet','mrp_id','Quality Reports')
+    report_ids = fields.One2many('inspection.sheet','mrp_id',string='Quality Reports')
 
     @api.multi
     def button_mark_done(self):

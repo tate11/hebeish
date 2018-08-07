@@ -38,16 +38,12 @@ class sale_order_approval(models.Model):
     @api.multi
     def action_first_approval(self):
         for order in self:
-            # order.state = 'waiting_second_approval'
-            # order.first_approved_by = self._uid
-            order.write({'state':'waiting_second_approval','first_approved_by':self._uid})
+            order.write({'state': 'waiting_second_approval', 'first_approved_by': self._uid})
         return True
 
     @api.multi
     def action_second_approval(self):
         for order in self:
-            # order.state = 'approved'
-            # order.first_approved_by = self._uid
             order.write({'state': 'approved', 'second_approved_by': self._uid})
         return True
 
