@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="ir_cron_generate_barcode_products" model="ir.cron">
+        <field name="name">Generate Barcode for Products</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field eval="True" name="active"/>
+        <field eval="'product.template'" name="model"/>
+        <field eval="'product_generate_barcode'" name="function"/>
+        <field eval="'()'" name="args"/>
+    </record>
+
+</odoo>

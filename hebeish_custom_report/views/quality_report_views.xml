@@ -1,0 +1,308 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record model="ir.sequence" id="seq_quality_report">
+        <field name="name">Inspection Certificate</field>
+        <field name="code">inspection.sheet</field>
+        <field name="prefix">INS/</field>
+        <field name="padding">5</field>
+    </record>
+
+
+    <record model="ir.ui.view" id="inspection_sheet_tree_view">
+			<field name="name">inspection.sheet.tree.view</field>
+			<field name="model">inspection.sheet</field>
+			<field name="priority">10</field>
+			<field name="arch" type="xml">
+				<tree string='Inspection Sheet'>
+					<field name="certificate_no"/>
+					<field name="report_template"/>
+					<field name="issue_date"/>
+					<field name="state"/>
+					<!--<field name="description"/>-->
+		   		</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="inspection_sheet_form_view">
+			<field name="name">inspection.sheet.form.view</field>
+			<field name="model">inspection.sheet</field>
+			<field name="priority">5</field>
+			<field name="arch" type="xml">
+				<form string="Inspection Sheet" version="7.0">
+					<header>
+                        <button string="Confirm" type="object" name="action_submit" states="draft" class="oe_highlight"/>
+                        <button string="Approve" type="object" name="action_first_approval" states="waiting_first_approval" class="oe_highlight" groups="mrp.group_mrp_manager"/>
+                        <button string="Approve" type="object" name="action_second_approval" states="waiting_second_approval" class="oe_highlight" groups="hebeish_custom_report.group_top_management"/>
+                        <button name="action_cancel" states="draft,waiting_first_approval,waiting_second_approval,approved" type="object" string="Cancel"/>
+                        <button name="action_draft" states="cancel" type="object" string="Set to Draft"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,approved"/>
+                    </header>
+					<sheet string="Inspection Sheet">
+                        <!--<label for="name" class="oe_edit_only"/>-->
+				 	    <group>
+							<group string="INSPECTION CERTIFICATE">
+								<field name="report_template"/>
+					    		<field name="acc_to" attrs="{'invisible': [('report_template', '=', 'micro_duct_pipe')]}"/>
+								<!--<field name="name"/>-->
+							</group>
+							<group></group>
+						</group>
+						<group attrs="{'invisible': [('report_template', '!=', 'micro_duct_pipe')]}">
+							<group>
+								<field name="dimensions"/>
+								<field name="production_date"/>
+								<field name="test_date"/>
+								<field name="operator_name"/>
+								<field name="customer_name"/>
+								<field name="po_no"/>
+							</group>
+							<group>
+								<field name="pressure_class"/>
+								<field name="work_order_number"/>
+								<field name="date_work_order"/>
+								<field name="batch_no"/>
+								<field name="project_name"/>
+								<field name="work_order_qty"/>
+								<field name="delivered_qty"/>
+							</group>
+						</group>
+
+						<group string="Test Results">
+							<field name="micro_duct_pipe" nolabel="1" attrs="{'invisible': [('report_template', '!=', 'micro_duct_pipe')]}">
+								<tree editable="top">
+									<field name="name"/>
+									<field name="result"/>
+									<field name="test_result"/>
+								</tree>
+							</field>
+						</group>
+
+					    <group attrs="{'invisible': [('report_template', '=', 'micro_duct_pipe')]}">
+                            <group>
+						        <field name="certificate_no"/>
+								<field name="product_code"/>
+								<field name="product_description"/>
+								<field name="diameter"/>
+								<field name="customer_name"/>
+								<field name="project_name"/>
+                            </group>
+                            <group>
+								<field name="issue_date"/>
+								<field name="production_date"/>
+								<field name="raw_material"/>
+								<field name="material_type"/>
+								<field name="batch_no"/>
+								<field name="po_no"/>
+                            </group>
+                        </group>
+						<group attrs="{'invisible': [('report_template', 'not in', ['melt_flow_rate','pipe_heat','pipe_periodic'])]}">
+							<group string="Test Conditions:">
+								<field name="test_temperature"/>
+								<field name="time_interval"/>
+								<field name="load_piston" attrs="{'invisible': [('report_template', '!=', 'melt_flow_rate')]}"/>
+								<field name="thickness" attrs="{'invisible': [('report_template', 'not in', ['pipe_periodic','pipe_heat'])]}"/>
+							</group>
+							<group></group>
+						</group>
+
+						<group attrs="{'invisible': [('report_template', 'not in' , ['humidity_test','material_density'])]}">
+							<group string="Results">
+								<field name="w1_result" attrs="{'invisible': [('report_template', '!=', 'humidity_test')]}" />
+								<field name="w2_result" attrs="{'invisible': [('report_template', '!=', 'humidity_test')]}"/>
+								<field name="final_w1_w2" attrs="{'invisible': [('report_template', '!=', 'humidity_test')]}"/>
+
+								<field name="m1_result" attrs="{'invisible': [('report_template', '!=', 'material_density')]}" />
+								<field name="m2_result" attrs="{'invisible': [('report_template', '!=', 'material_density')]}"/>
+								<field name="final_m1_m2" attrs="{'invisible': [('report_template', '!=', 'material_density')]}"/>
+							</group>
+							<group></group>
+						</group>
+						<group attrs="{'invisible': [('report_template', '!=', 'material_density')]}">
+							<div>
+								<b>Where:</b><br/>
+								DW is water density = 1 gm/cm3<br/>
+								M1 is sample weight in air<br/>
+								M2 is sample weight under water<br/>
+								Desity =M1-M2/M1*DW<br/>
+								Desity =<field name="m1_result_label" readonly="1" nolabel="1"/>-<field name="m2_result_label" readonly="1" nolabel="1"/>/<field name="m1_result_label2" readonly="1" nolabel="1"/>*1 =  <field name="final_m1_m2_label"/>
+							</div>
+						</group>
+						<group attrs="{'invisible': [('report_template', '!=', 'humidity_test')]}">
+							<div>
+								<b>Equation:</b><br/>
+								Humidity %= W1-W2/ W1%<br/>
+								Humidity %= <field name="w1_result_label" readonly="1" nolabel="1"/> - <field name="w2_result_label" readonly="1" nolabel="1"/> / <field name="w1_result_label2" readonly="1" nolabel="1"/> =  <field name="final_w1_w2_label"/>
+								<br/><br/><b>Where:</b><br/>
+								W1 is original sample weight<br/>
+								W2 Is sample weight after heating for an hour at 120ºC and cooled at room temperaturer<br/>
+							</div>
+						</group>
+						<group attrs="{'invisible': [('report_template', '!=', 'melt_flow_rate')]}">
+							<field name="melt_flow_rate" string=" ">
+									<tree editable="bottom">
+										<field name="result" string="Results"/>
+									</tree>
+							</field>
+							<group>
+								<field name="total" attrs="{'invisible': [('report_template', '!=', 'melt_flow_rate')]}"/>
+								<field name="final_result"/>
+							</group>
+							<group></group>
+						</group>
+						<group attrs="{'invisible': [('report_template', '!=', 'melt_flow_rate')]}">
+							<div>
+								<b>Equation:</b><br/>
+								MFR=600xM/T<br/>
+								MFR=600x<field name="final_result_mean"/>/240 = <field name="final_result_label"/><br/>
+								<br/><b>Where:</b><br/>
+								MFR= Melt Flow Rate 1g/10min<br/>
+								M= Mean value of the mass of the cutoff in grm<br/>
+								T= Time interval in seconds according to table shown above<br/>
+							</div>
+						</group>
+
+						<group string="Results" attrs="{'invisible': [('report_template', '!=', 'pipe_heat')]}">
+							<group string="L0">
+								<field name="l0_1"/>
+								<field name="l0_2"/>
+								<field name="l0_3"/>
+							</group>
+							<group string="L1">
+								<field name="l1_1"/>
+								<field name="l1_2"/>
+								<field name="l1_3"/>
+							</group>
+						</group>
+						<group attrs="{'invisible': [('report_template', '!=', 'pipe_heat')]}">
+							<div>
+								<p>Percentage of length change is determined using the following equation</p>
+								<p><b>E=(L0-L1)100/L0</b></p>
+								<table class="table table-condensed" style="margin-left:150px; width:50%;">
+									<thead>
+										<tr>
+											<th>E1</th>
+											<th>E2</th>
+											<th>E3</th>
+											<th>Total</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<th><field name="e1"/></th>
+											<th><field name="e2"/></th>
+											<th><field name="e3"/></th>
+											<th><field name="total_e"/></th>
+										</tr>
+									</tbody>
+                          		</table>
+								<p><b>E=Σ E/3 =1%</b></p>
+							</div>
+						</group>
+
+							<field name="periodic_intervals" attrs="{'invisible': [('report_template', '!=', 'pipe_periodic')]}">
+							   <tree editable="bottom">
+								   <field name="work_order"/>
+								   <field name="product_code"/>
+								   <field name="production_description"/>
+								   <field name="a1"/>
+								   <field name="r1"/>
+								   <field name="a2"/>
+								   <field name="r2"/>
+								   <field name="a3"/>
+								   <field name="r3"/>
+								   <field name="a4"/>
+								   <field name="r4"/>
+								   <field name="a5"/>
+								   <field name="r5"/>
+								   <field name="a6"/>
+								   <field name="r6"/>
+							   </tree>
+							</field>
+                            <group attrs="{'invisible': [('report_template', '!=', 'pipe_periodic')]}">
+								<group>
+									<field name="total_qty_tested"/>
+						    		<field name="accepted_qty"/>
+						    		<field name="rejected_qty"/>
+								</group>
+								<group></group>
+							</group>
+
+							<field name="final_dimension_weight" attrs="{'invisible': [('report_template', '!=', 'final_dimension_weight')]}">
+							   <tree editable="bottom">
+								   <field name="thickness"/>
+								   <field name="diameter"/>
+								   <field name="sample_date"/>
+								   <field name="sample_weight"/>
+								   <field name="sample_from"/>
+								   <field name="sample_to"/>
+								   <field name="period"/>
+							   </tree>
+							</field>
+
+							<group attrs="{'invisible': [('report_template', '!=', 'final_dimension_weight')]}">
+								<group>
+									<field name="d_max"/>
+									<field name="d_min"/>
+								</group>
+								<group></group>
+							</group>
+							<group attrs="{'invisible': [('report_template', '!=', 'final_dimension_weight')]}">
+								<div>
+									<b>Circularity Calculation:</b><br/>
+									Circularity Tolerance= D max - D min<br/><br/>
+									<b>Where:</b><br/>
+									D Max= Maximum pipe outer diameter = <field name="d_max_label" readonly="1"/><br/>
+									D Min= Minimum pipe outer diameter = <field name="d_min_label" readonly="1"/><br/>
+									So: Circularity Tolerance: <field name="d_max_label1" readonly="1"/> - <field name="d_min_label1" readonly="1"/> = <field name="d_final"/>
+								</div>
+							</group>
+
+						    <field name="pipe_general" attrs="{'invisible': [('report_template', '!=', 'pipe_general')]}">
+							   <tree editable="bottom">
+								   <field name="test"/>
+								   <field name="standard"/>
+								   <field name="condition"/>
+								   <field name="result"/>
+								   <field name="unit"/>
+							   </tree>
+							</field>
+
+					</sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+			</field>
+		</record>
+
+
+	        <!-- ACTIONS  -->
+		<record model="ir.actions.act_window" id="action_show_reports">
+			<field name="name">Inspection Sheet</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">inspection.sheet</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<!--<field name="search_view_id" ref="risk_search_form_view"/>-->
+		</record>
+
+			<menuitem name="Inspection Sheets"
+				  id="menu_inspection_sheet"
+				  parent="quality.menu_quality_root"
+				  action="action_show_reports"/>
+
+
+		<record id="mrp_production_form_reports" model="ir.ui.view">
+            <field name="name">mrp.production.form.reports</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+                <field name="company_id" position="after">
+					<field name="report_ids" domain="[('state', '=', 'approved')]" widget="many2many_tags"/>
+                </field>
+            </field>
+        </record>
+
+</odoo>

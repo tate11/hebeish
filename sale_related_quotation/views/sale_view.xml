@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="related_sale_view_form" model="ir.ui.view">
+            <field name="name">related.sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="payment_term_id" position="after">
+                    <field name="related_order_id"/>
+                </field>
+                <!--<field name="picking_policy" position="after">-->
+                    <!--<field name="related_order_id" attrs="{'invisible':[('related_order_id','=',False)]}"/>-->
+                <!--</field>-->
+                <button name="action_view_invoice" position="after">
+                  <button name="action_view_related_orders"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-bars"
+                        attrs="{'invisible': [('quotation_count', '=', 0)]}">
+                    <field name="quotation_count" widget="statinfo" string="Related Orders"/>
+                  </button>
+                </button>
+            </field>
+        </record>
+
+    </data>
+</odoo>

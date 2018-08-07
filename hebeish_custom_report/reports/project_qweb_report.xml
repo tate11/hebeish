@@ -1,0 +1,452 @@
+<odoo>
+	<!-- register qweb report to create project detail report -->
+	<report
+		id = "custom_report_detail"
+		string="Inspection Sheet"
+		model="inspection.sheet"
+		name="hebeish_custom_report.custom_report_qweb_report"
+		report_type="qweb-pdf"/>
+
+	<!-- Paper Format -->
+    <record id="inspection_sheet_qweb" model="report.paperformat">
+       <field name="name">Inspection Sheet Paper Format</field>
+       <field name="default" eval="True" />
+       <field name="format">A4</field>
+       <field name="page_height">0</field>
+       <field name="page_width">0</field>
+       <field name="orientation">Portrait</field>
+       <field name="margin_top">50</field>
+       <field name="margin_bottom">15</field>
+       <field name="margin_left">10</field>
+       <field name="margin_right">10</field>
+       <field name="header_line" eval="False" />
+       <field name="header_spacing">45</field>
+       <field name="dpi">90</field>
+       <field name="report_ids" eval="[
+                                       (4, ref('hebeish_custom_report.custom_report_detail'))
+                                       ]"/>
+    </record>
+
+	<!-- template for project detail -->
+	<template id="custom_report_qweb_report">
+		<t>
+			<t t-foreach="docs" t-as="e">
+				<t t-call="report.external_layout">
+					<div class="page">
+						<form>
+							<!--<br/>-->
+							<div class="container">
+								<t t-if="e.report_template == 'micro_duct_pipe'">
+									<t t-call="hebeish_custom_report.final_report_tmplate"/>
+								</t>
+								<t t-if="e.report_template != 'micro_duct_pipe'">
+									<h4>INSPECTION CERTIFICATE</h4>
+									<h4>Acc to <span t-field="e.acc_to"/></h4>
+									<h4><span t-field="e.report_template"/></h4>
+									<br/>
+									<table class="table table-bordered">
+										<tbody>
+											<tr>
+												<th>Certificate No</th>
+												<td><span t-field="e.certificate_no"/></td>
+												<th>Date of Issue</th>
+												<td><span t-field="e.issue_date"/></td>
+											</tr>
+											<tr>
+												<th>Product Code</th>
+												<td><span t-field="e.product_code"/></td>
+												<th>Production Date</th>
+												<td><span t-field="e.production_date"/></td>
+											</tr>
+											<tr>
+												<th>Product Description</th>
+												<td><span t-field="e.product_description"/></td>
+												<th>Raw Material</th>
+												<td><span t-field="e.raw_material"/></td>
+											</tr>
+											<tr>
+												<th>Diameter</th>
+												<td><span t-field="e.diameter"/></td>
+												<th>Type of PE Material</th>
+												<td><span t-field="e.material_type"/></td>
+											</tr>
+											<tr>
+												<th>Customer Name</th>
+												<td><span t-field="e.customer_name"/></td>
+												<th>Batch No</th>
+												<td><span t-field="e.batch_no"/></td>
+											</tr>
+											<tr>
+												<th>Project Name</th>
+												<td><span t-field="e.project_name"/></td>
+												<th>PO No</th>
+												<td><span t-field="e.po_no"/></td>
+											</tr>
+										</tbody>
+									</table>
+									<t t-if="e.report_template in ['melt_flow_rate','pipe_heat','pipe_periodic']">
+										<table style="width:50%;">
+														<tr>
+															<th colspan="2" style="padding-bottom:10px;">Test Conditions:</th>
+														</tr>
+														<tr>
+															<td style="width:180px;">Test Temperature</td>
+															<td><span t-field="e.test_temperature"/></td>
+														</tr>
+														<tr>
+															<td>Time Interval</td>
+															<td><span t-field="e.time_interval"/></td>
+														</tr>
+														<t t-if="e.report_template == 'melt_flow_rate'">
+															<tr>
+																<td>Load on Piston</td>
+																<td><span t-field="e.load_piston"/></td>
+															</tr>
+														</t>
+														<t t-if="e.report_template in ['pipe_heat','pipe_periodic']">
+															<tr>
+																<td>Thickness</td>
+																<td><span t-field="e.thickness"/></td>
+															</tr>
+														</t>
+										</table>
+									</t>
+									<br/>
+
+
+										<table class="table table-condensed">
+											<thead>
+												<t t-if="e.report_template in ['humidity_test', 'material_density','melt_flow_rate','pipe_heat']">
+												<tr style="border-bottom:1px black;border-style: solid;">
+													<th>Test</th>
+													<th>Standard</th>
+													<th>Sample Type</th>
+													<t t-if="e.report_template in ['humidity_test', 'material_density','melt_flow_rate']">
+														<th>Results</th>
+													</t>
+													<t t-if="e.report_template == 'pipe_heat'">
+														<th>L0</th>
+														<th>L1</th>
+													</t>
+													<th>Unit</th>
+												</tr>
+												</t>
+											</thead>
+											<tbody>
+
+													<t t-if="e.report_template == 'humidity_test'">
+														<tr>
+															<td t-att-rowspan="3"><span t-field="e.report_template"/></td>
+															<td t-att-rowspan="3"><span t-field="e.acc_to"/></td>
+															<td>W1</td>
+															<td><span t-field="e.w1_result"/></td>
+															<td>gm/minute</td>
+														</tr>
+														<tr>
+															<td>W2</td>
+															<td><span t-field="e.w2_result"/></td>
+															<td>gm/minute</td>
+														</tr>
+														<tr>
+															<td>Final</td>
+															<td><span t-field="e.final_w1_w2"/></td>
+															<td>%</td>
+														</tr>
+													</t>
+
+
+													<t t-if="e.report_template == 'material_density'">
+														<tr>
+															<td t-att-rowspan="3"><span t-field="e.report_template"/></td>
+															<td t-att-rowspan="3"><span t-field="e.acc_to"/></td>
+															<td>M1</td>
+															<td><span t-field="e.m1_result"/></td>
+															<td>gm</td>
+														</tr>
+														<tr>
+															<td>M2</td>
+															<td><span t-field="e.m2_result"/></td>
+															<td>gm</td>
+														</tr>
+														<tr>
+															<td>Final Result</td>
+															<td><span t-field="e.final_m1_m2"/></td>
+															<td>gm/cm3</td>
+														</tr>
+													</t>
+
+
+													<t t-if="e.report_template == 'melt_flow_rate'">
+														<t t-set="counter" t-value="1" />
+															<tr t-foreach="e.melt_flow_rate" t-as="m">
+																<t t-set="counter" t-value="counter+1" />
+															</tr>
+														<tr>
+															<td t-att-rowspan="counter"><span t-field="e.report_template"/></td>
+															<td t-att-rowspan="counter"><span t-field="e.acc_to"/></td>
+														</tr>
+														<t t-set="counter" t-value="0" />
+														<tr t-foreach="e.melt_flow_rate" t-as="m">
+															<t t-set="counter" t-value="counter+1" />
+															<td><t t-esc="counter"/></td>
+															<td><span t-field="m.result"/></td>
+															<td>gm</td>
+														</tr>
+													</t>
+
+
+													<t t-if="e.report_template == 'pipe_heat'">
+														<tr>
+															<td t-att-rowspan="3"><span t-field="e.report_template"/></td>
+															<td t-att-rowspan="3"><span t-field="e.acc_to"/></td>
+															<td>1</td>
+															<td><span t-field="e.l0_1"/></td>
+															<td><span t-field="e.l1_1"/></td>
+															<td>cm</td>
+														</tr>
+														<tr>
+															<td>2</td>
+															<td><span t-field="e.l0_2"/></td>
+															<td><span t-field="e.l1_2"/></td>
+															<td>cm</td>
+														</tr>
+														<tr>
+															<td>3</td>
+															<td><span t-field="e.l0_3"/></td>
+															<td><span t-field="e.l1_3"/></td>
+															<td>cm</td>
+														</tr>
+													</t>
+
+											</tbody>
+										</table>
+
+
+									<t t-if="e.report_template == 'pipe_periodic'">
+										<table class="table table-bordered">
+											<thead>
+												<tr>
+													<th t-att-rowspan="3">Period No</th>
+													<th t-att-rowspan="3">Work Order</th>
+													<th t-att-rowspan="3">Product Code</th>
+													<th t-att-rowspan="3">Production Description</th>
+													<th t-att-colspan="12">Time Intervals</th>
+												</tr>
+												<tr>
+													<th t-att-colspan="2"></th>
+													<th t-att-colspan="2"></th>
+													<th t-att-colspan="2"></th>
+													<th t-att-colspan="2"></th>
+													<th t-att-colspan="2"></th>
+													<th t-att-colspan="2"></th>
+												</tr>
+												<tr>
+													<th>A</th>
+													<th>R</th>
+													<th>A</th>
+													<th>R</th>
+													<th>A</th>
+													<th>R</th>
+													<th>A</th>
+													<th>R</th>
+													<th>A</th>
+													<th>R</th>
+													<th>A</th>
+													<th>R</th>
+												</tr>
+											</thead>
+											<tbody class="invoice_tbody">
+												<t t-set="counter" t-value="0" />
+												<tr t-foreach="e.periodic_intervals" t-as="p">
+													<t t-set="counter" t-value="counter+1" />
+													<td><t t-esc="counter"/></td>
+													<td><span t-field="p.work_order"/></td>
+													<td><span t-field="p.product_code"/></td>
+													<td><span t-field="p.production_description"/></td>
+													<td><span t-field="p.a1"/></td>
+													<td><span t-field="p.r1"/></td>
+													<td><span t-field="p.a2"/></td>
+													<td><span t-field="p.r2"/></td>
+													<td><span t-field="p.a3"/></td>
+													<td><span t-field="p.r3"/></td>
+													<td><span t-field="p.a4"/></td>
+													<td><span t-field="p.r4"/></td>
+													<td><span t-field="p.a5"/></td>
+													<td><span t-field="p.r5"/></td>
+													<td><span t-field="p.a6"/></td>
+													<td><span t-field="p.r6"/></td>
+												</tr>
+											</tbody>
+										</table>
+										<br/>
+										<table>
+												<tr>
+													<th>Total Quantity Tested</th>
+													<td><span t-field="e.total_qty_tested"/></td>
+												</tr>
+												<tr>
+													<th style="width:200px;">(A)= Accepted Quantity</th>
+													<td><span t-field="e.accepted_qty"/></td>
+												</tr>
+												<tr>
+													<th>(R)= Rejected Quantity</th>
+													<td><span t-field="e.rejected_qty"/></td>
+												</tr>
+											</table>
+									</t>
+
+
+									<t t-if="e.report_template == 'final_dimension_weight'">
+										<table class="table table-condensed">
+											<thead>
+												<tr>
+													<th>Sample No</th>
+													<th>Thickness (mm)</th>
+													<th>Diameter (mm)</th>
+													<th>Sample Date</th>
+													<th>Sample Weight</th>
+													<th t-att-colspan="2">Sample Time</th>
+													<th>Period</th>
+												</tr>
+												<tr>
+													<th t-att-colspan="4"></th>
+													<th>Grm</th>
+													<th>From</th>
+													<th>To</th>
+													<th></th>
+												</tr>
+											</thead>
+											<tbody class="invoice_tbody">
+												<t t-set="counter" t-value="0" />
+												<tr t-foreach="e.final_dimension_weight" t-as="d">
+													<t t-set="counter" t-value="counter+1" />
+													<td><t t-esc="counter"/></td>
+													<td><span t-field="d.thickness"/></td>
+													<td><span t-field="d.diameter"/></td>
+													<td><span t-field="d.sample_date"/></td>
+													<td><span t-field="d.sample_weight"/></td>
+													<td><span t-field="d.sample_from"/></td>
+													<td><span t-field="d.sample_to"/></td>
+													<td><span t-field="d.period"/></td>
+												</tr>
+											</tbody>
+										</table>
+									</t>
+
+
+
+									<t t-if="e.report_template == 'pipe_general'">
+										<table class="table table-condensed">
+											<thead>
+												<tr>
+													<th>Test</th>
+													<th>Standard</th>
+													<th>Conditions</th>
+													<th>Results</th>
+													<th>Unit</th>
+												</tr>
+											</thead>
+											<tbody class="invoice_tbody">
+												<t t-set="counter" t-value="0" />
+												<tr t-foreach="e.pipe_general" t-as="d">
+													<t t-set="counter" t-value="counter+1" />
+													<td><t t-esc="counter"/>.<span t-field="d.test"/></td>
+													<td><span t-field="d.standard"/></td>
+													<td><span t-field="d.condition"/></td>
+													<td><span t-field="d.result"/></td>
+													<td><span t-field="d.unit"/></td>
+												</tr>
+											</tbody>
+										</table>
+									</t>
+
+
+
+									<t t-if="e.report_template == 'material_density'">
+										<br/><br/>
+										<h5><b>Where:</b></h5>
+										DW is water density = 1 gm/cm3<br/>
+										M1 is sample weight in air<br/>
+										M2 is sample weight under water<br/>
+										Desity =M1-M2/M1*DW
+									</t>
+									<t t-if="e.report_template == 'humidity_test'">
+										<br/><br/>
+										<h5><b>Equation:</b></h5>
+										Humidity %= W1-W2/ W1%<br/><br/>
+										<h5><b>Where:</b></h5>
+										<h5>W1 is original sample weight</h5>
+										W2 Is sample weight after heating for an hour at 120ºC and cooled at room temperature
+									</t>
+
+									<t t-if="e.report_template == 'melt_flow_rate'">
+										<br/><br/>
+										<h5><b>Final Result:</b></h5>
+										<p>
+											<span t-field="e.final_result"/>
+										</p>
+										<h5><b>Equation:</b></h5>
+										MFR=600xM/T
+										<h5><b>So: </b>MFR = 600x<span t-field="e.final_result_mean"/>/240 = <span t-field="e.final_result_label"/> g/10min</h5>
+										<h5><b>Where:</b></h5>
+										MFR= Melt Flow Rate 1g/10min<br/>
+										M= Mean value of the mass of the cutoff in grm<br/>
+										T= Time interval in seconds according to table shown above
+									</t>
+
+
+									<t t-if="e.report_template == 'final_dimension_weight'">
+										<br/>
+										<h5><b>Circularity Calculation:</b></h5>
+										<p>
+											Circularity Tolerance= D max - D min
+										</p>
+										<h5><b>Where:</b></h5>
+										<b>D Max=</b> Maximum pipe outer diameter = <span t-field="e.d_max"/><br/>
+										<b>D Min=</b> Minimum pipe outer diameter = <span t-field="e.d_min"/><br/>
+										<b>So:</b> Circularity Tolerance = <span t-field="e.d_max"/> - <span t-field="e.d_min"/> = <span t-field="e.d_final"/>
+									</t>
+
+
+									<t t-if="e.report_template == 'pipe_general'">
+										<br/><br/>
+										The results according to test 1-3 are taken from the PE raw material test done for Pipe produced by October for Plastic Pipes<br/>
+										The results according to test 4-6 are taken from the internal test results of fittings sampled from the same batch as delivered fittings<br/>
+										The results for item 6 has a tolerance of 10% of pipe thickness<br/>
+									</t>
+
+
+									<t t-if="e.report_template == 'pipe_heat'">
+										<br/><br/>
+										<h5>Percentage of length change is determined using the following equation</h5>
+										<h5><b> E=(L1-L0)100/L0 </b></h5>
+										<center>
+											<table class="table table-condensed" style="width:50%;">
+												<tr>
+													<th>E1</th>
+													<th>E2</th>
+													<th>E3</th>
+													<th>Total</th>
+												</tr>
+												<tr>
+													<td><span t-field="e.e1"/> %</td>
+													<td><span t-field="e.e2"/> %</td>
+													<td><span t-field="e.e3"/> %</td>
+													<td><span t-field="e.total_e"/> %</td>
+												</tr>
+											</table>
+										</center>
+										<h5><b> E=Σ E/3 =1% </b></h5>
+									</t>
+								<br/><br/>
+								<h6><b>This document has been issued by Odoo and is valid without signature</b></h6>
+								</t>
+							</div>
+						</form>
+					</div>
+				</t>
+			</t>
+		</t>
+	</template>
+
+</odoo>

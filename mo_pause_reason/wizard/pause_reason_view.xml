@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data noupdate="0">
+        <record id="view_work_order_pause" model="ir.ui.view">
+            <field name="name">Workorder Pause Reason</field>
+            <field name="model">work.order.pause</field>
+            <field name="arch" type="xml">
+             <form string="Pause Reason" version="10.0">
+                <p class="oe_grey">
+                    Choose the reason for pausing the order.
+                </p>
+                <group>
+                    <field name="reason_id" widget="selection"/>
+                </group>
+                <footer>
+                    <button name="confirm_pause"
+                        string="Confirm" type="object"
+                        class="oe_highlight"/>
+                    or
+                    <button string="Cancel" class="oe_link"
+                        special="cancel" />
+                </footer>
+            </form>
+            </field>
+        </record>
+
+        <record id="action_work_order_pause" model="ir.actions.act_window">
+            <field name="name">Pause Reason</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">work.order.pause</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_work_order_pause"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

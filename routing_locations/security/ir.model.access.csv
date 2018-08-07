@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_routing_locations_routing_locations,routing_locations.routing_locations,model_routing_locations_routing_locations,,1,0,0,0

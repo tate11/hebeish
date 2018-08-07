@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_inspection_sheet,access_inspection_sheet_user,model_inspection_sheet,quality.group_quality_user,1,1,1,1
+access_micro_duct_pipe,access_micro_duct_pipe_user,model_micro_duct_pipe,quality.group_quality_user,1,1,1,1
+access_melt_flow,access_melt_flow_user,model_melt_flow,quality.group_quality_user,1,1,1,1
+access_periodic_interval,access_periodic_interval_user,model_periodic_interval,quality.group_quality_user,1,1,1,1
+access_final_dimension_weight,access_final_dimension_weight_user,model_final_dimension_weight,quality.group_quality_user,1,1,1,1
+access_pipe_general,access_pipe_general_user,model_pipe_general,quality.group_quality_user,1,1,1,1

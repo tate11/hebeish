@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="mrp_production_work_order_pause_form" model="ir.ui.view">
+        <field name="name">mrp.workorder.pause.form</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp.mrp_production_workcenter_form_view_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='button_pending']" position="replace">
+                <button name="%(action_work_order_pause)d" type="action" string="Pause" class="btn-warning" attrs="{'invisible': ['|', '|', ('working_state', '=', 'blocked'), ('state', 'in', ('done', 'pending', 'ready', 'cancel')), ('is_user_working', '=', False)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='time_ids']/tree/field[@name='loss_id']" position="after">
+                    <field name="pause_reason_id" class="oe_inline" required="False" options='{"no_open": True}' />
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_work_order_pause_reason_form">
+        <field name="name">Work Order Pause Reason</field>
+        <field name="model">work.order.pause.reason</field>
+        <field name="arch" type="xml">
+            <form string="Work Order Pause Reasons">
+                <field name="name"/>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_work_order_pause_reason_tree">
+        <field name="name">Work Order Pause Reason</field>
+        <field name="model">work.order.pause.reason</field>
+        <field name="arch" type="xml">
+            <tree string="Work order Pause Reasons">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_work_order_pause_reason">
+        <field name="name">Work order Pause Reason</field>
+        <field name="res_model">work.order.pause.reason</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_work_order_pause_reason"
+      parent= "mrp.menu_pm_resources_config"
+      name="Work order Pause Reasons"
+      action="action_work_order_pause_reason"
+      sequence="150"/>
+
+</odoo>

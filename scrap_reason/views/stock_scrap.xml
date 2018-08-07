@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <record id="stock_scrap_form2_reason" model="ir.ui.view">
+        <field name="name">stock.scrap.reason.form</field>
+        <field name="model">stock.scrap</field>
+        <field name="inherit_id" ref="stock.stock_scrap_form_view2"/>
+        <field name="arch" type="xml">
+            <div class="o_row" position="after">
+                <field name="scrap_reason_id"/>
+            </div>
+        </field>
+    </record>
+    <record id="stock_scrap_form_reason" model="ir.ui.view">
+        <field name="name">stock.scrap.reason.form</field>
+        <field name="model">stock.scrap</field>
+        <field name="inherit_id" ref="stock.stock_scrap_form_view"/>
+        <field name="arch" type="xml">
+            <div class="o_row" position="after">
+                <field name="scrap_reason_id"/>
+            </div>
+        </field>
+    </record>
+
+    <!-- Scrap Reason tree view -->
+    <record model="ir.ui.view" id="scrap_reason_tree_view">
+        <field name="name">scrap.reason.tree.view</field>
+        <field name="model">scrap.reason</field>
+        <field name="priority">10</field>
+        <field name="arch" type="xml">
+            <tree string='Scrap Reasons'>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Scrap Reason action -->
+    <record model="ir.actions.act_window" id="view_scrap_reason_action">
+        <field name="name">Scrap Reasons</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">scrap.reason</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="scrap_reason_tree_view"/>
+    </record>
+
+    <!-- Scrap Reason menuitem -->
+    <menuitem id="scrap_reason_menuitem" name="Scrap Reasons" sequence="6" parent="stock.menu_warehouse_config" action="view_scrap_reason_action"/>
+
+
+</odoo>

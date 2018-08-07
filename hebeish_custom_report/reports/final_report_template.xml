@@ -1,0 +1,323 @@
+<odoo>
+	<template id="final_report_tmplate">
+		<table class="table table-bordered">
+			<tbody>
+				<tr>
+					<td colspan="3"><center><b>Type of Pipe:</b> HDPE MicroDuct Pipes with a Silicon Inner Surface</center></td>
+				</tr>
+				<tr>
+					<td><b>Dimensions:</b> <span t-field="e.dimensions"/></td>
+					<td><b>Pressure Class:</b> <span t-field="e.pressure_class"/></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><b>Production Date:</b> <span t-field="e.production_date"/></td>
+					<td><b>Work Order Number:</b> <span t-field="e.work_order_number"/></td>
+					<td><b>Work Order Qty:</b> <span t-field="e.work_order_qty"/></td>
+				</tr>
+				<tr>
+					<td><b>Test Date:</b> <span t-field="e.test_date"/></td>
+					<td><b>Date of Work Order:</b> <span t-field="e.date_work_order"/></td>
+					<td><b>Delivered Qty:</b> <span t-field="e.delivered_qty"/></td>
+				</tr>
+				<tr>
+					<td><b>Operator Name:</b> <span t-field="e.operator_name"/></td>
+					<td><b>Materials Batch no:</b> <span t-field="e.batch_no"/></td>
+					<td><b>PO No:</b> <span t-field="e.po_no"/></td>
+				</tr>
+				<tr>
+					<td><b>Customer Name:</b> <span t-field="e.customer_name"/></td>
+					<td><b>Project:</b> <span t-field="e.project_name"/></td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+		<t t-set="test1"/>
+		<t t-set="test2"/>
+		<t t-set="test3"/>
+		<t t-set="test4"/>
+		<t t-set="test5"/>
+		<t t-set="test6"/>
+		<t t-set="test7"/>
+		<t t-set="test8"/>
+		<t t-set="test9"/>
+		<t t-set="test10"/>
+		<t t-set="test11"/>
+		<t t-set="test12"/>
+		<t t-set="test13"/>
+		<t t-set="test_result1"/>
+		<t t-set="test_result2"/>
+		<t t-set="test_result3"/>
+		<t t-set="test_result4"/>
+		<t t-set="test_result5"/>
+		<t t-set="test_result6"/>
+		<t t-set="test_result7"/>
+		<t t-set="test_result8"/>
+		<t t-set="test_result9"/>
+		<t t-set="test_result10"/>
+		<t t-set="test_result11"/>
+		<t t-set="test_result12"/>
+		<t t-set="test_result13"/>
+
+		<h4 style="text-decoration: underline;"><center>Quality Report for MicroDuct OD  (20 X 16 mm one way ribbed)</center></h4>
+
+		<t t-foreach="e.micro_duct_pipe" t-as="o">
+			<t t-if="o.name == 'test1'">
+				<t t-set="test1" t-value="o.result"/>
+				<t t-if="o.test_result">
+					<t t-set="test_result1">OK</t>
+				</t>
+				<t t-if="not o.test_result">
+					<t t-set="test_result1">X</t>
+				</t>
+			</t>
+			<t t-if="o.name == 'test2'">
+				<t t-set="test2" t-value="o.result"/>
+				<t t-if="o.test_result">
+					<t t-set="test_result2">OK</t>
+				</t>
+				<t t-if="not o.test_result">
+					<t t-set="test_result2">X</t>
+				</t>
+			</t>
+			<t t-if="o.name == 'test3'">
+				<t t-set="test3" t-value="o.result" />
+				<t t-if="o.test_result">
+					<t t-set="test_result3">Ok</t>
+				</t>
+				<t t-if="not o.test_result">
+					<t t-set="test_result3">X</t>
+				</t>
+			</t>
+			<t t-if="o.name == 'test4'">
+				<t t-set="test4" t-value="o.result" />
+				<t t-if="o.test_result">
+					<t t-set="test_result4">Ok</t>
+				</t>
+				<t t-if="not o.test_result">
+					<t t-set="test_result4">X</t>
+				</t>
+			</t>
+			<t t-if="o.name == 'test5'">
+				<t t-set="test5" t-value="o.result" />
+				<t t-if="o.test_result">
+					<t t-set="test_result5">Ok</t>
+				</t>
+				<t t-if="not o.test_result">
+					<t t-set="test_result5">X</t>
+				</t>
+			</t>
+			<t t-if="o.name == 'test6'">
+				<t t-set="test6" t-value="o.result" />
+				<t t-if="o.test_result">
+					<t t-set="test_result6">Ok</t>
+				</t>
+				<t t-if="not o.test_result">
+					<t t-set="test_result6">X</t>
+				</t>
+			</t>
+			<t t-if="o.name == 'test7'">
+				<t t-set="test7" t-value="o.result" />
+				<t t-if="o.test_result">
+					<t t-set="test_result7">Ok</t>
+				</t>
+				<t t-if="not o.test_result">
+					<t t-set="test_result7">X</t>
+				</t>
+			</t>
+			<t t-if="o.name == 'test8'">
+				<t t-set="test8" t-value="o.result" />
+				<t t-if="o.test_result">
+					<t t-set="test_result8">Ok</t>
+				</t>
+				<t t-if="not o.test_result">
+					<t t-set="test_result8">X</t>
+				</t>
+			</t>
+			<t t-if="o.name == 'test9'">
+				<t t-set="test9" t-value="o.result" />
+				<t t-if="o.test_result">
+					<t t-set="test_result9">Ok</t>
+				</t>
+				<t t-if="not o.test_result">
+					<t t-set="test_result9">X</t>
+				</t>
+			</t>
+			<t t-if="o.name == 'test10'">
+				<t t-set="test10" t-value="o.result" />
+				<t t-if="o.test_result">
+					<t t-set="test_result10">Ok</t>
+				</t>
+				<t t-if="not o.test_result">
+					<t t-set="test_result10">X</t>
+				</t>
+			</t>
+			<t t-if="o.name == 'test11'">
+				<t t-set="test11" t-value="o.result" />
+				<t t-if="o.test_result">
+					<t t-set="test_result11">Ok</t>
+				</t>
+				<t t-if="not o.test_result">
+					<t t-set="test_result11">X</t>
+				</t>
+			</t>
+			<t t-if="o.name == 'test12'">
+				<t t-set="test12" t-value="o.result" />
+				<t t-if="o.test_result">
+					<t t-set="test_result12">Ok</t>
+				</t>
+				<t t-if="not o.test_result">
+					<t t-set="test_result12">X</t>
+				</t>
+			</t>
+			<t t-if="o.name == 'test13'">
+				<t t-set="test13" t-value="o.result" />
+				<t t-if="o.test_result">
+					<t t-set="test_result13">Ok</t>
+				</t>
+				<t t-if="not o.test_result">
+					<t t-set="test_result13">X</t>
+				</t>
+			</t>
+		</t>
+
+		<table class="table table-bordered">
+			<tbody>
+				<tr>
+					<td colspan="6"><center><h5>Materials Test (per batch)</h5></center></td>
+				</tr>
+				<tr>
+					<th>Test</th>
+					<th>Result</th>
+					<th>Reference Standard</th>
+					<th>Accepted Range</th>
+					<th>Accept OK</th>
+					<th>Reject X</th>
+				</tr>
+				<tr>
+					<td>MFR (gm/10min.)@ 5 KG</td>
+					<td><t t-esc="test1"/></td>
+					<td>ASTM 1238</td>
+					<td>0.15-0.4 g/10min</td>
+					<td colspan="2"><t t-esc="test_result1"/></td>
+				</tr>
+				<tr>
+					<td>Density (Kg/m3)</td>
+					<td><t t-esc="test2"/></td>
+					<td>ASTM D1505</td>
+					<td>940-960 kg/m3</td>
+					<td colspan="2"><t t-esc="test_result2"/></td>
+				</tr>
+				<tr>
+					<td colspan="6"><center><h5>Product Mechanical Tests (per work order)</h5></center></td>
+				</tr>
+				<tr>
+					<th>Test</th>
+					<th>Result</th>
+					<th>Reference Standard</th>
+					<th>Accepted Range</th>
+					<th>Accept OK</th>
+					<th>Reject X</th>
+				</tr>
+				<tr>
+					<td>Tensile Strength MPA</td>
+					<td><t t-esc="test3"/></td>
+					<td>ASTM D638</td>
+					<td></td>
+					<td colspan="2"><t t-esc="test_result3"/></td>
+				</tr>
+				<tr>
+					<td>Elongation %</td>
+					<td><t t-esc="test4"/></td>
+					<td>ASTM D638</td>
+					<td></td>
+					<td colspan="2"><t t-esc="test_result4"/></td>
+				</tr>
+				<tr>
+					<td>Crush Test</td>
+					<td><t t-esc="test5"/></td>
+					<td>ASTM2412</td>
+					<td>No change in duct dimensions after compression</td>
+					<td colspan="2"><t t-esc="test_result5"/></td>
+				</tr>
+				<tr>
+					<td>Pressure test @ 1.5X</td>
+					<td><t t-esc="test6"/></td>
+					<td>Company Standard</td>
+					<td>10 bar for 1 hour</td>
+					<td colspan="2"><t t-esc="test_result6"/></td>
+				</tr>
+				<tr>
+					<td>Ball Pass Test</td>
+					<td><t t-esc="test7"/></td>
+					<td>Company Standard</td>
+					<td>Steel ball 12.8 mm diameter pass smoothly through micro duct</td>
+					<td colspan="2"><t t-esc="test_result7"/></td>
+				</tr>
+				<tr>
+					<td>Kink Test</td>
+					<td><t t-esc="test8"/></td>
+					<td>IEC 60794-1-2 Method E10</td>
+					<td>No kink appear after test</td>
+					<td colspan="2"><t t-esc="test_result8"/></td>
+				</tr>
+				<tr>
+					<td colspan="6"><center><h5>Dimension and Appearance Check (per coil)</h5></center></td>
+				</tr>
+				<tr>
+					<th>Test</th>
+					<th>Result</th>
+					<th>Reference Standard</th>
+					<th>Accepted Range</th>
+					<th>Accept OK</th>
+					<th>Reject X</th>
+				</tr>
+				<tr>
+					<td>Weight gm/m</td>
+					<td><t t-esc="test9"/></td>
+					<td>Company Standard</td>
+					<td>≥75 g/m</td>
+					<td colspan="2"><t t-esc="test_result9"/></td>
+				</tr>
+				<tr>
+					<td>Coil length m</td>
+					<td><t t-esc="test10"/></td>
+					<td>Company Standard</td>
+					<td>≥1000 m</td>
+					<td colspan="2"><t t-esc="test_result10"/></td>
+				</tr>
+				<tr>
+					<td>OD mm</td>
+					<td><t t-esc="test11"/></td>
+					<td>Company Standard</td>
+					<td>14±0.1 mm</td>
+					<td colspan="2"><t t-esc="test_result11"/></td>
+				</tr>
+				<tr>
+					<td>Thickness mm</td>
+					<td><t t-esc="test12"/></td>
+					<td>Company Standard</td>
+					<td>2±0.2mm</td>
+					<td colspan="2"><t t-esc="test_result12"/></td>
+				</tr>
+				<tr>
+					<td>Ovality mm</td>
+					<td><t t-esc="test13"/></td>
+					<td>ASTM F 216</td>
+					<td>&lt;7%</td>
+					<td colspan="2"><t t-esc="test_result13"/></td>
+				</tr>
+			</tbody>
+		</table>
+		<br/><br/>
+		<h5><b>Note:</b></h5>
+		<ul type="circle" style="margin-left:45px;">
+			<li>Pressure Test: A 1 meter sample is taken from the production line to be tested for 1.5X the recommended pressure for 1 hr</li>
+			<li>Ball Pass Test: a Steel ball of 80% the inner diameter is to pass smoothly through the microduct.</li>
+			<li>Kink Test: Duct is bent between two plates with a distance of 20xOD for 10 minutes without kink.</li>
+			<li>Crush Test: 30cm long sample is taken from production line to be compressed to 15% of inner diameter for a minute then left to recover for an hour if no change in sample dimensions after compression then it passes the test.</li>
+		</ul>
+		<br/><br/>
+		<p><span style="margin-left:100px;">Quality Department Signature</span><span style="margin-left: 250px;">Factory Manager</span></p>
+	</template>
+</odoo>

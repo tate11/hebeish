@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="account_invoice_report_proforma" inherit_id="account.report_invoice_document">
+            <xpath expr="//h2" position="inside">
+                <t t-if="o.is_proforma == True and o.type == 'proforma' ">
+                    <span>Proforma Invoice</span>
+                    <span t-field="o.proforma_number"/>
+                </t>
+            </xpath>
+        </template>
+    </data>
+</odoo>

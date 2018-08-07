@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+         <!-- Inherit Form View to Modify it -->
+        <record id="purchase_order_inherit_form" model="ir.ui.view">
+            <field name="name">purchase.order.inherit.mts.mto</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//notebook/page[1]/field[@name='order_line']/tree" position="inside">
+                    <field name="mrp_production_id" readonly="1"/>
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</openerp>

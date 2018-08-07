@@ -1,0 +1,48 @@
+<odoo>
+	<template id="report_saleorder_schedule_date_inherit" inherit_id="sale.report_saleorder_document">
+		<xpath expr="//th[@t-if='display_discount']" position="after">
+			<th class="text-right">Delivery Date</th>
+		</xpath>
+		<xpath expr="//td[@t-if='display_discount']" position="after">
+			<td class="text-right">
+				<span t-field="l.schedule_date"/>
+			</td>
+		</xpath>
+		<xpath expr="//div[@t-if='doc.date_order']" position="after">
+			<div t-if="doc.validity_date" class="col-xs-3">
+				<strong>Expiration Date:</strong>
+				<p t-field="doc.validity_date"/>
+			</div>
+		</xpath>
+
+		<xpath expr="//div[@t-if='doc.user_id.name']" position="replace">
+			 <div t-if="doc.sale_person" class="col-xs-3">
+				 <strong>Salesperson:</strong>
+				 <p t-field="doc.sale_person"/>
+			 </div>
+		</xpath>
+
+
+		<xpath expr="//div[@class='col-xs-6']" position="replace">
+			<div class="col-xs-6">
+				<h5><strong>To: </strong><span t-field="doc.partner_id"/></h5>
+				<h5><strong>Project Name: </strong><span t-field="doc.project_name"/></h5>
+			</div>
+		</xpath>
+		<xpath expr="//div[@class='col-xs-5 col-xs-offset-1']" position="replace">
+			<div class="col-xs-5 col-xs-offset-1"></div>
+		</xpath>
+	</template>
+
+
+	<template id="report_image_external_layout_header" inherit_id="report.external_layout_header">
+		<xpath expr="//div[@class='col-xs-6']" position="replace">
+			<div class="col-xs-6" name="company_address">
+                <span t-field="company.partner_id" t-field-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}" style="border-bottom: 1px solid black; display:inline-block;"/>
+            </div>
+            <div class="col-xs-6">
+                <img class="text-right" t-if="company.report_image" t-att-src="'data:image/png;base64,%s' % company.report_image" style="float:right;max-height:100px;margin-top:20px;"/>
+			</div>
+		</xpath>
+	</template>
+</odoo>

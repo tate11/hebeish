@@ -1,0 +1,74 @@
+<openerp>
+    <data>
+
+        <record id="sale_order_form_inherit_view" model="ir.ui.view">
+            <field name="name">sale.order.inherit.form.view</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//header/button[@name='action_done']" position="after">
+                     <button name="action_proforma" states="draft,sent,sale" type="object" string="Create Proforma Invoice"/>
+                 </xpath>
+                 <xpath expr="//sheet/div[@name='button_box']" position="inside">
+                    <button name="action_view_proforma_invoice"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-pencil-square-o"
+                        attrs="{'invisible': [('proforma_invoice_count', '=', 0)]}">
+                        <field name="proforma_invoice_count" widget="statinfo" string="Proforma Invoices"/>
+                    </button>
+                 </xpath>
+            </field>
+        </record>
+
+        <record id="proforma_invoice_tree_view" model="ir.ui.view">
+            <field name="name">Proforma Invoice Tree View</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="create">false</attribute>
+                </xpath>
+                <xpath expr="field[@name='residual_signed']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="proforma_invoice_form_view" model="ir.ui.view">
+            <field name="name">Proforma Invoice Form View</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="replace"/>
+                <xpath expr="//field[@name='type']" position="after">
+                    <field name="state" invisible="1"/>
+                    <field name="is_proforma" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='number']" position="after">
+                    <field name="proforma_number" readonly="1" attrs="{'invisible':[('is_proforma','=',False),('type','!=','proforma')]}"/>
+                </xpath>
+            </field>
+        </record>
+
+
+         <record model="ir.actions.act_window" id="proforma_invoice_view">
+            <field name="name">Proforma Invoice</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'is_proforma':True,'type':'proforma'}</field>
+            <field name="domain">[('is_proforma','=',True),('type','=','proforma')]</field>
+            <field name="view_ids"
+                   eval="[(5, 0, 0),
+                        (0, 0, {'view_mode': 'tree', 'view_id': ref('proforma_account_invoice.proforma_invoice_tree_view')}),
+                        (0, 0, {'view_mode': 'form', 'view_id': ref('proforma_account_invoice.proforma_invoice_form_view')}),
+                        ]"/>
+        </record>
+
+
+        <menuitem id="proforma_invoice_menu" name="Proforma Invoices" action="proforma_invoice_view" parent="account.menu_finance_receivables" sequence="2" />
+    </data>
+</openerp>
