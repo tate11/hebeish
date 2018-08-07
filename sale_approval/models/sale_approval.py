@@ -13,7 +13,7 @@ class sale_order_approval(models.Model):
             order.sale_person = sale_person.name
 
     project_name = fields.Char('Project Name')
-    sale_person = fields.Char('Salesperson',compute='_get_sales_person')
+    sale_person = fields.Char('Salesperson', compute='_get_sales_person')
     state = fields.Selection([
         ('draft', 'Quotation'),
         ('waiting_first_approval', 'Waiting First Approval'),
@@ -24,7 +24,10 @@ class sale_order_approval(models.Model):
         ('sale', 'Sales Order'),
         ('done', 'Locked'),
         ('cancel', 'Cancelled'),
-        ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
+    ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
+
+    first_approved_by = fields.Many2one('res.users', string='First Approved')
+    second_approved_by = fields.Many2one('res.users', string='Second Approved')
 
     @api.multi
     def action_submit(self):
@@ -35,16 +38,19 @@ class sale_order_approval(models.Model):
     @api.multi
     def action_first_approval(self):
         for order in self:
-            order.state = 'waiting_second_approval'
+            # order.state = 'waiting_second_approval'
+            # order.first_approved_by = self._uid
+            order.write({'state':'waiting_second_approval','first_approved_by':self._uid})
         return True
 
     @api.multi
     def action_second_approval(self):
         for order in self:
-            order.state = 'approved'
+            # order.state = 'approved'
+            # order.first_approved_by = self._uid
+            order.write({'state': 'approved', 'second_approved_by': self._uid})
         return True
-    
-    
+
     @api.multi
     @api.onchange('date_order')
     def date_order_change(self):
@@ -54,7 +60,6 @@ class sale_order_approval(models.Model):
                 line.schedule_date = date_1
             else:
                 line.schedule_date = date_1 + datetime.timedelta(days=line.customer_lead)
-
 
     @api.multi
     def _prepare_invoice(self):
@@ -85,7 +90,6 @@ class sale_order_approval(models.Model):
         }
         return invoice_vals
 
-
     @api.multi
     def action_invoice_create(self, grouped=False, final=False):
         """
@@ -107,7 +111,7 @@ class sale_order_approval(models.Model):
                 if group_key not in invoices:
                     inv_data = order._prepare_invoice()
                     invoice = inv_obj.create(inv_data)
-                    invoice.sudo().write({'user_id':self.user_id and self.user_id.id})
+                    invoice.sudo().write({'user_id': self.user_id and self.user_id.id})
                     references[invoice] = order
                     invoices[group_key] = invoice
                 elif group_key in invoices:
@@ -144,19 +148,19 @@ class sale_order_approval(models.Model):
             # by onchanges, which are not triggered when doing a create.
             invoice.compute_taxes()
             invoice.message_post_with_view('mail.message_origin_link',
-                values={'self': invoice, 'origin': references[invoice]},
-                subtype_id=self.env.ref('mail.mt_note').id)
+                                           values={'self': invoice, 'origin': references[invoice]},
+                                           subtype_id=self.env.ref('mail.mt_note').id)
         return [inv.id for inv in invoices.values()]
 
 
 class sale_order_line_inherits(models.Model):
     _inherit = 'sale.order.line'
 
-    onhand_qty = fields.Float('Onhand Qty',related='product_id.qty_available')
+    onhand_qty = fields.Float('Onhand Qty', related='product_id.qty_available')
     schedule_date = fields.Datetime(string="Delivery Date")
 
     @api.multi
-    @api.onchange('customer_lead','product_uom_qty')
+    @api.onchange('customer_lead', 'product_uom_qty')
     def customer_lead_change(self):
         date_1 = datetime.datetime.strptime(self.order_id.date_order, "%Y-%m-%d %H:%M:%S")
         if self.product_uom_qty < self.onhand_qty:
