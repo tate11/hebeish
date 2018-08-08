@@ -1,6 +1,7 @@
 import datetime
 from odoo import api, exceptions, fields, models, _
 
+
 class stock_picking_approval(models.Model):
     _inherit = 'stock.picking'
 
@@ -9,7 +10,7 @@ class stock_picking_approval(models.Model):
         ('waiting', 'Waiting Another Operation'),
         ('confirmed', 'Waiting Availability'),
         ('partially_available', 'Partially Available'),
-        ('approved','Approved'),
+        ('approved', 'Approved'),
         ('assigned', 'Available'), ('done', 'Done')], string='Status', compute='_compute_state',
         copy=False, index=True, readonly=True, store=True, track_visibility='onchange',
         help=" * Draft: not confirmed yet and will not be scheduled until confirmed\n"
@@ -21,6 +22,8 @@ class stock_picking_approval(models.Model):
              " * Cancelled: has been cancelled, can't be confirmed anymore")
 
     need_approval = fields.Boolean('Need Approval', compute='_get_picking_type')
+    first_approved_by = fields.Many2one('res.users', string='First Approved')
+    second_approved_by = fields.Many2one('res.users', string='Second Approved')
 
     @api.multi
     def _get_picking_type(self):
@@ -30,15 +33,21 @@ class stock_picking_approval(models.Model):
             else:
                 picking.need_approval = True
 
-
     @api.multi
     def action_approve(self):
         for order in self:
-            order.state = 'approved'
+            order.write({'state': 'approved', 'first_approved_by': self._uid})
         return True
 
+    @api.multi
+    def do_new_transfer(self):
+        res = super(stock_picking_approval, self).do_new_transfer()
+        for rec in self:
+            rec.write({'second_approved_by': self._uid})
+        return res
 
-    @api.depends('move_type', 'launch_pack_operations', 'move_lines.state', 'move_lines.picking_id', 'move_lines.partially_available')
+    @api.depends('move_type', 'launch_pack_operations', 'move_lines.state', 'move_lines.picking_id',
+                 'move_lines.partially_available')
     @api.one
     def _compute_state(self):
         ''' State of a picking depends on the state of its related stock.move
@@ -70,10 +79,13 @@ class stock_picking_approval(models.Model):
             self.state = ordered_moves[0].state
         else:
             filtered_moves = self.move_lines.filtered(lambda move: move.state not in ['cancel', 'done'])
-            if not all(move.state == 'assigned' for move in filtered_moves) and any(move.state == 'assigned' for move in filtered_moves):
+            if not all(move.state == 'assigned' for move in filtered_moves) and any(
+                    move.state == 'assigned' for move in filtered_moves):
                 self.state = 'partially_available'
             elif any(move.partially_available for move in filtered_moves):
                 self.state = 'partially_available'
             else:
-                ordered_moves = filtered_moves.sorted(key=lambda move: (move.state == 'assigned' and 2) or (move.state == 'waiting' and 1) or 0, reverse=True)
+                ordered_moves = filtered_moves.sorted(
+                    key=lambda move: (move.state == 'assigned' and 2) or (move.state == 'waiting' and 1) or 0,
+                    reverse=True)
                 self.state = ordered_moves[0].state

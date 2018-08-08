@@ -6,6 +6,7 @@
     'depends': ['stock'],
     'data': [
         'views/stock_picking.xml',
+        'views/delivery_slip_report_inherit.xml',
     ],
     'demo': [
     ],

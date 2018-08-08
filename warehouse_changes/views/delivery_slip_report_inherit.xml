@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_delivery_document_inherit_approval" inherit_id="stock.report_delivery_document">
+            <xpath expr="//div[@name='customer_address']" position="inside">
+                <div class="col-xs-4 pull-left">
+                    <div>
+                        <span>
+                            <strong>Approve By:</strong>
+                            <span t-field="o.first_approved_by"/>
+                        </span>
+                    </div>
+                    <div>
+                        <span>
+                            <strong>Validated By:</strong>
+                            <span t-field="o.second_approved_by"/>
+                        </span>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>
