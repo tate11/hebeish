@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import datetime
 from odoo import api, fields, models, _
 from odoo.tools import float_is_zero, float_compare, DEFAULT_SERVER_DATETIME_FORMAT
@@ -28,6 +29,21 @@ class sale_order_approval(models.Model):
 
     first_approved_by = fields.Many2one('res.users', string='First Approved')
     second_approved_by = fields.Many2one('res.users', string='Second Approved')
+    get_data_from_messages = fields.Char(string='Get Data From Messages', compute='get_approval_users_from_messages')
+
+    @api.multi
+    def get_approval_users_from_messages(self):
+        for sale in self:
+            if sale.state in ['done', 'sale'] and not sale.first_approved_by and not sale.second_approved_by:
+                for message in sale.message_ids:
+                    for track in message.tracking_value_ids:
+                        if track.field_desc in ['\u0627\u0644\u062d\u0627\u0644\u0647 ','Status'] and track.old_value_char == 'Waiting First Approval' and track.new_value_char == 'Waiting Second Approval':
+                            fuser = self.env['res.users'].search([('partner_id','=',track.mail_message_id.author_id.id)])
+                            sale.write({'first_approved_by': fuser.id})
+
+                        elif track.field_desc in ['\u0627\u0644\u062d\u0627\u0644\u0647 ','Status'] and track.old_value_char == 'Waiting Second Approval' and track.new_value_char == 'Approved':
+                            secuser = self.env['res.users'].search([('partner_id', '=', track.mail_message_id.author_id.id)])
+                            sale.write({'second_approved_by': secuser.id})
 
     @api.multi
     def action_submit(self):

@@ -9,26 +9,31 @@
                 <xpath expr="//header" position="replace">
                     <header>
                         <button name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"
-                            type="action" class="btn-primary"
-                            attrs="{'invisible': [('invoice_status', '!=', 'to invoice')]}"/>
+                                type="action" class="btn-primary"
+                                attrs="{'invisible': [('invoice_status', '!=', 'to invoice')]}"/>
                         <button name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"
-                            type="action" context="{'default_advance_payment_method': 'percentage'}"
-                            attrs="{'invisible': ['|',('invoice_status', '!=', 'no'), ('state', '!=', 'sale')]}"/>
-                        <!--<button name="action_quotation_send" string="Send by Email" type="object" states="approved" class="btn-primary"/>-->
-                        <!--<button name="print_quotation" string="Print" type="object" states="approved" class="btn-primary"/>-->
-                        <!--<button name="action_confirm" states="sent" string="Confirm Sale" class="btn-primary o_sale_confirm" type="object" />-->
-                        <button string="Submit To Manager" type="object" name="action_submit" states="draft,sent" class="oe_highlight"/>
-                        <button string="Approve" type="object" name="action_first_approval" states="waiting_first_approval" class="oe_highlight" groups="sales_team.group_sale_manager"/>
-                        <button string="Approve" type="object" name="action_second_approval" states="waiting_second_approval" class="oe_highlight" groups="sales_team.group_sale_manager"/>
-                        <button name="print_quotation" string="Print" type="object" states="sent,sale,approved" class="btn-primary"/>
-                        <button name="action_quotation_send" string="Send by Email" type="object" states="approved,sent,sale" class="btn-primary"/>
-                        <button string="Confirm Sale" type="object" name="action_confirm" states="approved" groups="account.group_account_user" class="btn-primary o_sale_confirm"/>
-		        <!--&lt;!&ndash; Revision Module base&ndash;&gt;-->
-                	    <!--<button name="make_revision" string="Revise the Quotation" type="object" states="approved,sent" class="btn-primary"/>-->
-			<!--&lt;!&ndash; End of Revision Module base&ndash;&gt;-->
-                        <button name="action_cancel" states="draft,sent,sale,waiting_first_approval,waiting_second_approval,approved" type="object" string="Cancel"/>
+                                type="action" context="{'default_advance_payment_method': 'percentage'}"
+                                attrs="{'invisible': ['|',('invoice_status', '!=', 'no'), ('state', '!=', 'sale')]}"/>
+                        <button string="Submit To Manager" type="object" name="action_submit" states="draft,sent"
+                                class="oe_highlight"/>
+                        <button string="Approve" type="object" name="action_first_approval"
+                                states="waiting_first_approval" class="oe_highlight"
+                                groups="sales_team.group_sale_manager"/>
+                        <button string="Approve" type="object" name="action_second_approval"
+                                states="waiting_second_approval" class="oe_highlight"
+                                groups="sales_team.group_sale_manager"/>
+                        <button name="print_quotation" string="Print" type="object" states="sent,sale,approved"
+                                class="btn-primary"/>
+                        <button name="action_quotation_send" string="Send by Email" type="object"
+                                states="approved,sent,sale" class="btn-primary"/>
+                        <button string="Confirm Sale" type="object" name="action_confirm" states="approved"
+                                groups="account.group_account_user" class="btn-primary o_sale_confirm"/>
+                        <button name="action_cancel"
+                                states="draft,sent,sale,waiting_first_approval,waiting_second_approval,approved"
+                                type="object" string="Cancel"/>
                         <button name="action_draft" states="cancel" type="object" string="Set to Quotation"/>
-                        <button name="action_done" type="object" string="Lock" states="sale" help="If the sale is locked, you can not modify it anymore. However, you will still be able to invoice or deliver."/>
+                        <button name="action_done" type="object" string="Lock" states="sale"
+                                help="If the sale is locked, you can not modify it anymore. However, you will still be able to invoice or deliver."/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,approved,sale"/>
                     </header>
                 </xpath>
@@ -42,9 +47,22 @@
                 </xpath>
                 <field name="partner_id" position="after">
                     <field name="project_name"/>
+                    <field name="get_data_from_messages" invisible="1"/>
                 </field>
             </field>
         </record>
+
+        <record id="approval_view_order_tree" model="ir.ui.view">
+            <field name="name">approval.view.order.tree</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="after">
+                    <field name="get_data_from_messages" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
 
     </data>
 </odoo>
