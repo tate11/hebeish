@@ -19,7 +19,7 @@
                 <field name="report_template"/>
                 <field name="issue_date"/>
                 <field name="state"/>
-                <!--<field name="description"/>-->
+                <field name="get_data_from_messages" invisible="1"/>
             </tree>
         </field>
     </record>
@@ -43,14 +43,17 @@
                     <field name="state" widget="statusbar" statusbar_visible="draft,approved"/>
                 </header>
                 <sheet string="Inspection Sheet">
-                    <!--<label for="name" class="oe_edit_only"/>-->
                     <group>
                         <group string="INSPECTION CERTIFICATE">
                             <field name="report_template"/>
                             <field name="acc_to" attrs="{'invisible': [('report_template', '=', 'micro_duct_pipe')]}"/>
-                            <!--<field name="name"/>-->
+
                         </group>
-                        <group></group>
+                        <group >
+                            <field name="get_data_from_messages" invisible="1"/>
+                            <field name="first_approved_by" invisible="1"/>
+                            <field name="second_approved_by" invisible="1"/>
+                        </group>
                     </group>
                     <group attrs="{'invisible': [('report_template', '!=', 'micro_duct_pipe')]}">
                         <group>
@@ -356,7 +359,6 @@
         <field name="res_model">inspection.sheet</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
-        <!--<field name="search_view_id" ref="risk_search_form_view"/>-->
     </record>
 
     <menuitem name="Inspection Sheets"

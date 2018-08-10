@@ -37,7 +37,6 @@ class sale_order_approval(models.Model):
             if sale.state in ['done', 'sale'] and not sale.first_approved_by and not sale.second_approved_by:
                 for message in sale.message_ids:
                     for track in message.tracking_value_ids:
-                        print(track.field_desc, "state")
                         if track.old_value_char == 'Waiting First Approval' and track.new_value_char == 'Waiting Second Approval':
                             fuser = self.env['res.users'].search(
                                 [('partner_id', '=', track.mail_message_id.author_id.id)])
