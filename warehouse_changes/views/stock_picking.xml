@@ -15,6 +15,23 @@
                     <button name="action_approve" string="Approve" type="object" class="oe_highlight" groups="account.group_account_user"
                     attrs="{'invisible': ['|',('need_approval','=',False),('state','not in',['draft','partially_available','assigned'])]}"/>
                 </xpath>
+
+                <xpath expr="//field[@name='location_dest_id']" position="after">
+                    <field name="get_data_from_messages" invisible="1"/>
+                    <field name="first_approved_by" invisible="1"/>
+                    <field name="second_approved_by" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="approval_users_vpicktree" model="ir.ui.view">
+            <field name="name">approval.users.stock.picking.tree</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.vpicktree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="after">
+                    <field name="get_data_from_messages" invisible="1"/>
+                </xpath>
             </field>
         </record>
 

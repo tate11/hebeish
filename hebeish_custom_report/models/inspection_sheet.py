@@ -123,18 +123,19 @@ class InspectionSheet(models.Model):
     @api.multi
     def get_approval_users_from_messages(self):
         for sheet in self:
-            if sheet.state == 'approved' and not sheet.first_approved_by and not sheet.second_approved_by:
-                for message in sheet.message_ids:
-                    for track in message.tracking_value_ids:
-                        if track.old_value_char == 'Waiting First Approval' and track.new_value_char == 'Waiting Second Approval':
-                            fuser = self.env['res.users'].search(
-                                [('partner_id', '=', track.mail_message_id.author_id.id)])
-                            sheet.write({'first_approved_by': fuser.id})
+            if sheet.state == 'approved':
+                if not sheet.first_approved_by or not sheet.second_approved_by:
+                    for message in sheet.message_ids:
+                        for track in message.tracking_value_ids:
+                            if track.old_value_char == 'Waiting First Approval' and track.new_value_char == 'Waiting Second Approval':
+                                fuser = self.env['res.users'].search(
+                                    [('partner_id', '=', track.mail_message_id.author_id.id)])
+                                sheet.write({'first_approved_by': fuser.id})
 
-                        elif track.old_value_char == 'Waiting Second Approval' and track.new_value_char == 'Approved':
-                            secuser = self.env['res.users'].search(
-                                [('partner_id', '=', track.mail_message_id.author_id.id)])
-                            sheet.write({'second_approved_by': secuser.id})
+                            elif track.old_value_char == 'Waiting Second Approval' and track.new_value_char == 'Approved':
+                                secuser = self.env['res.users'].search(
+                                    [('partner_id', '=', track.mail_message_id.author_id.id)])
+                                sheet.write({'second_approved_by': secuser.id})
 
     @api.onchange('product_code')
     def onchange_product_code(self):

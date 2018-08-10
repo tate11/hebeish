@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 import datetime
 from odoo import api, exceptions, fields, models, _
+import sys
 
 
 class stock_picking_approval(models.Model):
@@ -24,6 +26,25 @@ class stock_picking_approval(models.Model):
     need_approval = fields.Boolean('Need Approval', compute='_get_picking_type')
     first_approved_by = fields.Many2one('res.users', string='First Approved')
     second_approved_by = fields.Many2one('res.users', string='Second Approved')
+    get_data_from_messages = fields.Char(string='Get Data From Messages', compute='get_approval_users_from_messages')
+
+    @api.multi
+    def get_approval_users_from_messages(self):
+        for sheet in self:
+            if sheet.state in ['approved', 'done']:
+                if not sheet.first_approved_by or not sheet.second_approved_by:
+                    for message in sheet.message_ids:
+                        for track in message.tracking_value_ids:
+                            done_state = 'منتهي'.decode('utf8')
+                            if track.new_value_char == 'Approved':
+                                fuser = self.env['res.users'].search(
+                                    [('partner_id', '=', track.mail_message_id.author_id.id)])
+                                sheet.write({'first_approved_by': fuser.id})
+
+                            elif track.new_value_char == 'Done' or track.new_value_char == done_state:
+                                secuser = self.env['res.users'].search(
+                                    [('partner_id', '=', track.mail_message_id.author_id.id)])
+                                sheet.write({'second_approved_by': secuser.id})
 
     @api.multi
     def _get_picking_type(self):

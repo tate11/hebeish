@@ -1,2 +1,3 @@
-import stock_picking
+# -*- coding: utf-8 -*-
+from . import stock_picking
 
