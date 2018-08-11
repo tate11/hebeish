@@ -36,19 +36,22 @@
             </div>
         </xpath>
         <xpath expr="//div[@class='col-xs-5 col-xs-offset-1']" position="replace">
-            <div class="col-xs-5 col-xs-offset-1">
-                <h5>
-                    <strong>First Approval By :</strong>
-                    <span t-field="doc.first_approved_by"/>
-                </h5>
-                <h5>
-                    <strong>Second Approval By :</strong>
-                    <span t-field="doc.second_approved_by"/>
-                </h5>
-            </div>
+
+        </xpath>
+        <xpath expr="//p[@id='fiscal_position_remark']" position="after">
+            <table style="width:100%">
+                <tr>
+                    <td style="width:50%;">First Approval By :
+                        <span t-field="doc.first_approved_by"/>
+                    </td>
+                    <td style="width:5%;"/>
+                    <td style="width:45%">Second Approval By :
+                        <span t-field="doc.second_approved_by"/>
+                    </td>
+                </tr>
+            </table>
         </xpath>
     </template>
-
 
     <template id="report_image_external_layout_header" inherit_id="report.external_layout_header">
         <xpath expr="//div[@class='col-xs-6']" position="replace">
