@@ -49,8 +49,7 @@
                                                 <td style="width:50%">Acc To :
                                                     <span t-field="e.acc_to"/>
                                                 </td>
-                                                <td style="width:50%">First Approved By :
-                                                    <span t-field="e.first_approved_by"/>
+                                                <td style="width:50%">
                                                 </td>
 
                                             </tr>
@@ -58,8 +57,7 @@
                                                 <td style="width:50%">Doe :
                                                     <span t-field="e.report_template"/>
                                                 </td>
-                                                <td style="width:50%">Second Approved By :
-                                                    <span t-field="e.second_approved_by"/>
+                                                <td style="width:50%">
                                                 </td>
 
                                             </tr>
@@ -668,6 +666,19 @@
                                     <h6>
                                         <b>This document has been issued by Odoo and is valid without signature</b>
                                     </h6>
+
+                                    <br/>
+                                    <table style="width:100%">
+                                        <tr>
+                                            <td style="width:50%;">First Approved By :
+                                                <span t-field="e.first_approved_by"/>
+                                            </td>
+                                            <td style="width:5%;"/>
+                                            <td style="width:45%">Second Approved By :
+                                                <span t-field="e.second_approved_by"/>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </t>
                             </div>
                         </form>
