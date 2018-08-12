@@ -36,17 +36,17 @@ class sale_order_approval(models.Model):
         for sale in self:
             if sale.state in ['done', 'sale']:
                 if not sale.first_approved_by or not sale.second_approved_by:
-                    for message in sale.message_ids:
-                        for track in message.tracking_value_ids:
+                    for message in sale.sudo().message_ids:
+                        for track in message.sudo().tracking_value_ids:
                             if track.old_value_char == 'Waiting First Approval' and track.new_value_char == 'Waiting Second Approval':
-                                fuser = self.env['res.users'].search(
+                                fuser = self.env['res.users'].sudo().search(
                                     [('partner_id', '=', track.mail_message_id.author_id.id)])
-                                sale.write({'first_approved_by': fuser.id})
+                                sale.sudo().write({'first_approved_by': fuser.id})
 
                             elif track.old_value_char == 'Waiting Second Approval' and track.new_value_char == 'Approved':
-                                secuser = self.env['res.users'].search(
+                                secuser = self.env['res.users'].sudo().search(
                                     [('partner_id', '=', track.mail_message_id.author_id.id)])
-                                sale.write({'second_approved_by': secuser.id})
+                                sale.sudo().write({'second_approved_by': secuser.id})
 
     @api.multi
     def action_submit(self):
@@ -57,13 +57,13 @@ class sale_order_approval(models.Model):
     @api.multi
     def action_first_approval(self):
         for order in self:
-            order.write({'state': 'waiting_second_approval', 'first_approved_by': self._uid})
+            order.sudo().write({'state': 'waiting_second_approval', 'first_approved_by': self._uid})
         return True
 
     @api.multi
     def action_second_approval(self):
         for order in self:
-            order.write({'state': 'approved', 'second_approved_by': self._uid})
+            order.sudo().write({'state': 'approved', 'second_approved_by': self._uid})
         return True
 
     @api.multi
