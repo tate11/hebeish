@@ -30,21 +30,21 @@ class stock_picking_approval(models.Model):
 
     @api.multi
     def get_approval_users_from_messages(self):
-        for sheet in self:
-            if sheet.state in ['approved', 'done']:
-                if not sheet.first_approved_by or not sheet.second_approved_by:
-                    for message in sheet.message_ids:
-                        for track in message.tracking_value_ids:
+        for picking in self:
+            if picking.state in ['approved', 'done']:
+                if not picking.first_approved_by or not picking.second_approved_by:
+                    for message in picking.sudo().message_ids:
+                        for track in message.sudo().tracking_value_ids:
                             done_state = 'منتهي'.decode('utf8')
                             if track.new_value_char == 'Approved':
-                                fuser = self.env['res.users'].search(
+                                fuser = self.env['res.users'].sudo().search(
                                     [('partner_id', '=', track.mail_message_id.author_id.id)])
-                                sheet.write({'first_approved_by': fuser.id})
+                                picking.sudo().write({'first_approved_by': fuser.id})
 
                             elif track.new_value_char == 'Done' or track.new_value_char == done_state:
-                                secuser = self.env['res.users'].search(
+                                secuser = self.env['res.users'].sudo().search(
                                     [('partner_id', '=', track.mail_message_id.author_id.id)])
-                                sheet.write({'second_approved_by': secuser.id})
+                                picking.sudo().write({'second_approved_by': secuser.id})
 
     @api.multi
     def _get_picking_type(self):
@@ -57,14 +57,14 @@ class stock_picking_approval(models.Model):
     @api.multi
     def action_approve(self):
         for order in self:
-            order.write({'state': 'approved', 'first_approved_by': self._uid})
+            order.sudo().write({'state': 'approved', 'first_approved_by': self._uid})
         return True
 
     @api.multi
     def do_new_transfer(self):
         res = super(stock_picking_approval, self).do_new_transfer()
         for rec in self:
-            rec.write({'second_approved_by': self._uid})
+            rec.sudo().write({'second_approved_by': self._uid})
         return res
 
     @api.depends('move_type', 'launch_pack_operations', 'move_lines.state', 'move_lines.picking_id',
