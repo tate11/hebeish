@@ -63,6 +63,7 @@ class SaleOrderInherit(models.Model):
         else:
             action = {'type': 'ir.actions.act_window_close'}
         return action
+
     # =============================================================
     # ==== override computed function to change invoice_count =====
     @api.depends('state', 'order_line.invoice_status')
@@ -103,21 +104,23 @@ class SaleOrderInherit(models.Model):
 
     @api.depends('state', 'order_line.invoice_status')
     def _get_proforma_invoiced(self):
-        self.ensure_one()
-        invoices = self.mapped('invoice_ids')
-        res_count = self.env['account.invoice'].search_count([('id','in',invoices.ids),('is_proforma','=',True),('type','=','proforma')])
-        self.proforma_invoice_count = res_count
+        for rec in self:
+            invoices = rec.mapped('invoice_ids')
+            res_count = self.env['account.invoice'].search_count([('id','in',invoices.ids),('is_proforma','=',True),('type','=','proforma')])
+            rec.proforma_invoice_count = res_count
 
-    # ===============================================
     @api.multi
     def action_proforma(self):
-        self.ensure_one()
+        for rec in self:
+            proforma_inv_data = self._prepare_invoice()
+            proforma_inv_data.update({'is_proforma':True,'type':'proforma'})
+            proforma_invoice = self.env['account.invoice'].create(proforma_inv_data)
+            for line in rec.order_line :
+                vals = line._prepare_invoice_line(line.product_uom_qty)
+                vals.update({'invoice_id': proforma_invoice.id, 'sale_line_ids': [(6, 0, [line.id])]})
+                self.env['account.invoice.line'].create(vals)
+            proforma_invoice.compute_taxes()
+            proforma_invoice.action_date_assign()
 
-        proforma_inv_data = self._prepare_invoice()
-        proforma_inv_data.update({'is_proforma':True,'type':'proforma'})
-        proforma_invoice = self.env['account.invoice'].create(proforma_inv_data)
-        for line in self.order_line :
-            vals = line._prepare_invoice_line(line.product_uom_qty)
-            vals.update({'invoice_id': proforma_invoice.id, 'sale_line_ids': [(6, 0, [line.id])]})
-            self.env['account.invoice.line'].create(vals)
+
 
