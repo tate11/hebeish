@@ -6,18 +6,19 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-                 <xpath expr="//header/button[@name='action_done']" position="after">
-                     <button name="action_proforma" states="draft,sent,sale" type="object" string="Create Proforma Invoice"/>
-                 </xpath>
-                 <xpath expr="//sheet/div[@name='button_box']" position="inside">
+                <xpath expr="//header/button[@name='action_done']" position="after">
+                    <button name="action_proforma" states="draft,sent,sale" type="object"
+                            string="Create Proforma Invoice"/>
+                </xpath>
+                <xpath expr="//sheet/div[@name='button_box']" position="inside">
                     <button name="action_view_proforma_invoice"
-                        type="object"
-                        class="oe_stat_button"
-                        icon="fa-pencil-square-o"
-                        attrs="{'invisible': [('proforma_invoice_count', '=', 0)]}">
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-pencil-square-o"
+                            attrs="{'invisible': [('proforma_invoice_count', '=', 0)]}">
                         <field name="proforma_invoice_count" widget="statinfo" string="Proforma Invoices"/>
                     </button>
-                 </xpath>
+                </xpath>
             </field>
         </record>
 
@@ -48,13 +49,14 @@
                     <field name="is_proforma" invisible="1"/>
                 </xpath>
                 <xpath expr="//field[@name='number']" position="after">
-                    <field name="proforma_number" readonly="1" attrs="{'invisible':[('is_proforma','=',False),('type','!=','proforma')]}"/>
+                    <field name="proforma_number" readonly="1"
+                           attrs="{'invisible':[('is_proforma','=',False),('type','!=','proforma')]}"/>
                 </xpath>
             </field>
         </record>
 
 
-         <record model="ir.actions.act_window" id="proforma_invoice_view">
+        <record model="ir.actions.act_window" id="proforma_invoice_view">
             <field name="name">Proforma Invoice</field>
             <field name="res_model">account.invoice</field>
             <field name="view_type">form</field>
@@ -69,6 +71,7 @@
         </record>
 
 
-        <menuitem id="proforma_invoice_menu" name="Proforma Invoices" action="proforma_invoice_view" parent="account.menu_finance_receivables" sequence="2" />
+        <menuitem id="proforma_invoice_menu" name="Proforma Invoices" action="proforma_invoice_view"
+                  parent="account.menu_finance_receivables" sequence="2"/>
     </data>
 </openerp>

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-
         <record id="proforma_seq_num" model="ir.sequence">
             <field name="name">Proforma Sequence Number</field>
             <field name="code">proforma.seq.num</field>
             <field name="prefix">PRO/INV/</field>
             <field name="padding">5</field>
         </record>
-
     </data>
 </openerp>

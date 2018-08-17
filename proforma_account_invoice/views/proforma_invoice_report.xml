@@ -2,10 +2,12 @@
 <odoo>
     <data>
         <template id="account_invoice_report_proforma" inherit_id="account.report_invoice_document">
-            <xpath expr="//h2" position="inside">
+            <xpath expr="//div[@class='row'][1]" position="after">
                 <t t-if="o.is_proforma == True and o.type == 'proforma' ">
-                    <span>Proforma Invoice</span>
-                    <span t-field="o.proforma_number"/>
+                    <h3>
+                        <span>Proforma Invoice :</span>
+                        <span t-field="o.proforma_number"/>
+                    </h3>
                 </t>
             </xpath>
         </template>
