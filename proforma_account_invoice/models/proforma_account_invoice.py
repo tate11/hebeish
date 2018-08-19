@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from odoo import api, models,fields,_
-from odoo.exceptions import UserError,ValidationError
+from odoo import api, models, fields, _
+from odoo.exceptions import UserError, ValidationError
 
 
 class ProformaAccountInvoice(models.Model):
@@ -8,13 +8,23 @@ class ProformaAccountInvoice(models.Model):
 
     proforma_number = fields.Char()
     is_proforma = fields.Boolean(string='Proforma')
+    sale_order_id = fields.Many2one('sale.order', string='Sale Order', compute='get_sale_order')
+
+    @api.multi
+    @api.depends('origin')
+    def get_sale_order(self):
+        for rec in self:
+            if rec.origin:
+                sale_order_obj = self.env['sale.order'].sudo().search([('name', '=', rec.origin)],limit=1)
+                if sale_order_obj:
+                    rec.sale_order_id = sale_order_obj.id
 
     @api.model
     def create(self, vals):
         if vals.get('is_proforma') == True and vals.get('type') == 'proforma':
             vals['proforma_number'] = self.env['ir.sequence'].next_by_code('proforma.seq.num') or '/'
-            
-        return super(ProformaAccountInvoice, self).create(vals)   
+
+        return super(ProformaAccountInvoice, self).create(vals)
 
     @api.multi
     def name_get(self):
@@ -36,14 +46,15 @@ class ProformaAccountInvoice(models.Model):
 class SaleOrderInherit(models.Model):
     _inherit = 'sale.order'
 
-    proforma_invoice_count = fields.Integer(string='# of Proforma Invoices', compute='_get_proforma_invoiced', readonly=True)
+    proforma_invoice_count = fields.Integer(string='# of Proforma Invoices', compute='_get_proforma_invoiced',
+                                            readonly=True)
 
     @api.multi
     def action_view_invoice(self):
         invoices = self.mapped('invoice_ids')
         action = self.env.ref('account.action_invoice_tree1').read()[0]
         if len(invoices) > 1:
-            action['domain'] = [('id', 'in', invoices.ids),('is_proforma','=',False),('type','!=','proforma')]
+            action['domain'] = [('id', 'in', invoices.ids), ('is_proforma', '=', False), ('type', '!=', 'proforma')]
         elif len(invoices) == 1:
             action['views'] = [(self.env.ref('account.invoice_form').id, 'form')]
             action['res_id'] = invoices.ids[0]
@@ -56,7 +67,7 @@ class SaleOrderInherit(models.Model):
         invoices = self.mapped('invoice_ids')
         action = self.env.ref('proforma_account_invoice.proforma_invoice_view').read()[0]
         if len(invoices) > 1:
-            action['domain'] = [('id', 'in', invoices.ids),('is_proforma','=',True),('type','=','proforma')]
+            action['domain'] = [('id', 'in', invoices.ids), ('is_proforma', '=', True), ('type', '=', 'proforma')]
         elif len(invoices) == 1:
             action['views'] = [(self.env.ref('proforma_account_invoice.proforma_invoice_form_view').id, 'form')]
             action['res_id'] = invoices.ids[0]
@@ -95,7 +106,7 @@ class SaleOrderInherit(models.Model):
                 invoice_status = 'no'
 
             res_count = self.env['account.invoice'].search_count(
-                [('id', 'in', invoice_ids.ids), ('is_proforma', '=', False),('type','!=','proforma')])
+                [('id', 'in', invoice_ids.ids), ('is_proforma', '=', False), ('type', '!=', 'proforma')])
             order.update({
                 'invoice_count': len(set(refund_ids.ids)) + res_count,
                 'invoice_ids': invoice_ids.ids + refund_ids.ids,
@@ -106,21 +117,19 @@ class SaleOrderInherit(models.Model):
     def _get_proforma_invoiced(self):
         for rec in self:
             invoices = rec.mapped('invoice_ids')
-            res_count = self.env['account.invoice'].search_count([('id','in',invoices.ids),('is_proforma','=',True),('type','=','proforma')])
+            res_count = self.env['account.invoice'].search_count(
+                [('id', 'in', invoices.ids), ('is_proforma', '=', True), ('type', '=', 'proforma')])
             rec.proforma_invoice_count = res_count
 
     @api.multi
     def action_proforma(self):
         for rec in self:
             proforma_inv_data = self._prepare_invoice()
-            proforma_inv_data.update({'is_proforma':True,'type':'proforma'})
+            proforma_inv_data.update({'is_proforma': True, 'type': 'proforma'})
             proforma_invoice = self.env['account.invoice'].create(proforma_inv_data)
-            for line in rec.order_line :
+            for line in rec.order_line:
                 vals = line._prepare_invoice_line(line.product_uom_qty)
                 vals.update({'invoice_id': proforma_invoice.id, 'sale_line_ids': [(6, 0, [line.id])]})
                 self.env['account.invoice.line'].create(vals)
             proforma_invoice.compute_taxes()
             proforma_invoice.action_date_assign()
-
-
-

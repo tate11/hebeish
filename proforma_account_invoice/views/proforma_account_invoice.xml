@@ -51,7 +51,9 @@
                 <xpath expr="//field[@name='number']" position="after">
                     <field name="proforma_number" readonly="1"
                            attrs="{'invisible':[('is_proforma','=',False),('type','!=','proforma')]}"/>
+                    <field name="sale_order_id" invisible="1"/>
                 </xpath>
+
             </field>
         </record>
 

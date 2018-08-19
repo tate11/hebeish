@@ -10,6 +10,16 @@
                     </h3>
                 </t>
             </xpath>
+            <xpath expr="//div[@t-if='o.partner_id.ref']" position="after">
+                <div name="reference" class="col-xs-2" t-if="o.sale_order_id.x_customer_po">
+                    <strong>Customer PO:</strong>
+                    <p t-field="o.sale_order_id.x_customer_po"/>
+                </div>
+                <div class="col-xs-2" t-if="o.sale_order_id.project_name">
+                    <strong>Project Name:</strong>
+                    <p t-field="o.sale_order_id.project_name"/>
+                </div>
+            </xpath>
         </template>
     </data>
 </odoo>
