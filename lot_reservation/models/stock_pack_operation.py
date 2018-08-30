@@ -1,6 +1,27 @@
 from odoo import api, fields, models
 from odoo.addons import decimal_precision as dp
+from odoo.exceptions import ValidationError
 from odoo.tools.float_utils import float_round, float_compare
+
+class StockPackOperationLot(models.Model):
+    _inherit = "stock.pack.operation.lot"
+
+    @api.depends('lot_id')
+    def get_lot_onhand_qty(self):
+            for pack_lot in self:
+                res = pack_lot.operation_id.product_id._compute_quantities_dict(pack_lot.lot_id.id, self._context.get('owner_id'),
+                                                    self._context.get('package_id'), self._context.get('from_date'),
+                                                    self._context.get('to_date'))
+                pack_lot.onhand_qty = res[pack_lot.operation_id.product_id.id]['qty_available']
+
+    onhand_qty = fields.Float(compute="get_lot_onhand_qty", string='QTY on Hand', readonly=True)
+
+    @api.constrains('qty')
+    @api.onchange('qty')
+    def _check_qty_with_onhand(self):
+        for lot in self:
+            if lot.qty > lot.onhand_qty:
+                raise ValidationError("Your cannot proceed more quantity than onhand qty: %s" % lot.qty)
 
 
 class StockPackOperation(models.Model):

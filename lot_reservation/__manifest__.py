@@ -5,7 +5,9 @@
     'author': 'BI-Solutions',
     'company': 'BI Solutions',
     'depends': ['stock'],
-    'data': [],
+    'data': [
+        'views/stock_pack_operation_view.xml',
+    ],
     'installable': True,
     'auto_install': False,
 }
