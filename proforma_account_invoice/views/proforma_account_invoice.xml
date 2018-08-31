@@ -37,6 +37,18 @@
             </field>
         </record>
 
+        <record id="proforma_invoice_search_view" model="ir.ui.view">
+            <field name="name">Proforma Invoice Search View</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='draft']" position="before">
+                    <filter name="dashboard_inv" string="Draft And Not Proforma"
+                            domain="[('state','in', ('draft', 'proforma','proforma2')),('is_proforma','=',False)]"/>
+                </xpath>
+            </field>
+        </record>
+
         <record id="proforma_invoice_form_view" model="ir.ui.view">
             <field name="name">Proforma Invoice Form View</field>
             <field name="model">account.invoice</field>
@@ -75,5 +87,34 @@
 
         <menuitem id="proforma_invoice_menu" name="Proforma Invoices" action="proforma_invoice_view"
                   parent="account.menu_finance_receivables" sequence="2"/>
+
+
+        <!--override customer invoice action-->
+        <record id="account.action_invoice_tree1" model="ir.actions.act_window">
+            <field name="domain">[('type','in',('out_invoice', 'out_refund')),('is_proforma','=',False)]</field>
+        </record>
+
+        <record id="account_journal_dashboard_kanban_view_inherit" model="ir.ui.view">
+            <field name="name">account.journal.dashboard.kanban.view.inherit</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.account_journal_dashboard_kanban_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//templates/t[@t-name='JournalBodySalePurchase']/div[2]/div[@class='row'][1]/div[1]/a"
+                       position="replace">
+                    <a type="object" name="open_action"
+                       context="{'search_default_dashboard_inv': '1'}">
+                        <span t-if="journal_type == 'sale'" title="Invoices to validate">
+                            <t t-esc="dashboard.number_draft"/>
+                            Invoices to validate
+                        </span>
+                        <span t-if="journal_type == 'purchase'" title="Draft bills">
+                            <t t-esc="dashboard.number_draft"/>
+                            Draft bills
+                        </span>
+                    </a>
+                </xpath>
+            </field>
+        </record>
+
     </data>
 </openerp>
