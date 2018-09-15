@@ -36,11 +36,13 @@
                 <xpath expr="//notebook/page[2]" position="after">
                     <page string="Sales Orders">
                         <field name="sale_order_ids" nolabel="1">
-                            <tree editable="bottom" delete="0" create="0">
+                            <tree editable="bottom" delete="0" create="0" colors="grey:status=='cancel';">
                                 <field name="sale_order_id"/>
                                 <field name="customer_id"/>
                                 <field name="project_name"/>
                                 <field name="customer_po"/>
+                                <field name="ordered_qty"/>
+                                <field name="avail_qty"/>
                                 <field name="qty_to_produce"/>
                                 <field name="status"/>
                             </tree>

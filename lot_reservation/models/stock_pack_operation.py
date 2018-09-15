@@ -21,7 +21,7 @@ class StockPackOperationLot(models.Model):
     def _check_qty_with_onhand(self):
         for lot in self:
             if lot.qty > lot.onhand_qty:
-                raise ValidationError("Your cannot proceed more quantity than onhand qty: %s" % lot.qty)
+                raise ValidationError("You cannot proceed more than quantity on hand for lot: %s" % lot.lot_id.name)
 
 
 class StockPackOperation(models.Model):

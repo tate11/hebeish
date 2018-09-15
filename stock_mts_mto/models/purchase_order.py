@@ -3,7 +3,6 @@ from odoo.exceptions import UserError
 import math
 
 
-
 class purchase_order_line_inherit(models.Model):
     _inherit = 'purchase.order.line'
 
@@ -23,8 +22,10 @@ class production_sale_order(models.Model):
     customer_id = fields.Many2one(related='sale_order_id.partner_id',string='Customer',readonly=True)
     project_name = fields.Char(related='sale_order_id.project_name',string='Project',readonly=True)
     customer_po = fields.Char(related='sale_order_id.x_customer_po',string='Customer PO',readonly=True)
-    qty_to_produce = fields.Float('Quantity',readonly=True)
-    status = fields.Selection(related='sale_order_id.state',string='Status',readonly=True)
+    ordered_qty = fields.Float('Ordered Qty',readonly=True)
+    avail_qty = fields.Float('Available Qty',readonly=True)
+    qty_to_produce = fields.Float('Manufactured Qty',readonly=True)
+    status = fields.Selection([('sale','Sales Order'),('cancel','Cancelled')], string='Status',readonly=True)
 
 
 class mrp_production_inherit(models.Model):
