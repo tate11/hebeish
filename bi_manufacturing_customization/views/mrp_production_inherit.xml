@@ -7,7 +7,6 @@
             <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='bom_id']" position="replace">
-                    <field name="bom_has_moves" invisible="1"/>
                     <field name="bom_id"
                            domain="['&amp;', '|',
                                             ('product_id','=',product_id),
@@ -16,11 +15,11 @@
                                                 ('product_id','=',False),
                                                 ('type', '=', 'normal')]"
                            context="{'default_product_tmpl_id': product_tmpl_id}" required="1"
-                           attrs="{'readonly': [('bom_has_moves', '=', True)]}"/>
-
+                           attrs="{'readonly': [('state', '!=', 'confirmed')]}"/>
                 </xpath>
                 <xpath expr="//field[@name='routing_id']" position="replace">
-                    <field name="routing_id" groups="mrp.group_mrp_routings" readonly="0"/>
+                    <field name="routing_id" groups="mrp.group_mrp_routings"
+                           attrs="{'readonly': [('state', '!=', 'confirmed')]}"/>
                 </xpath>
             </field>
         </record>
