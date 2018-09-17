@@ -218,6 +218,13 @@ class sale_order_inherit(models.Model):
                     elif procurement_method == 'manufacture':
                         self.create_mo_procurement_order(mrp_line.product_id, mrp_line.product_uom_qty, True)
 
+    @api.multi
+    def action_done(self):
+        for order in self:
+            for line in self.env['production.sale.order'].sudo().search([('sale_order_id', '=', order.id), ('status', '!=', 'cancel')]):
+                line.write({'status':'locked'})
+        return super(sale_order_inherit, self).action_done()
+
 
     @api.multi
     def action_cancel(self):
@@ -230,8 +237,9 @@ class sale_order_inherit(models.Model):
                 if line.order_id not in rfqs:
                     line.unlink()
             mos = self.env['mrp.production'].sudo().search([('sale_production_id', '=', record.id),('state','!=','cancel')])
-            for prod in self.env['production.sale.order'].sudo().search([('sale_order_id', '=', record.id)]):
-                mos += prod.production_id
+            for prod in self.env['production.sale.order'].sudo().search([('sale_order_id', '=', record.id),('status','!=','cancel')]):
+                if prod.production_id not in mos and prod.production_id.state != 'cancel':
+                    mos += prod.production_id
             for mo in mos:
                 total_qty = 0
                 if mo.state not in ['confirmed','cancel']:

@@ -1,4 +1,5 @@
 from openerp import fields, models, api, exceptions, _
+from odoo.addons import decimal_precision as dp
 from odoo.exceptions import UserError
 import math
 
@@ -25,7 +26,7 @@ class production_sale_order(models.Model):
     ordered_qty = fields.Float('Ordered Qty',readonly=True)
     avail_qty = fields.Float('Available Qty',readonly=True)
     qty_to_produce = fields.Float('Manufactured Qty',readonly=True)
-    status = fields.Selection([('sale','Sales Order'),('cancel','Cancelled')], string='Status',readonly=True)
+    status = fields.Selection([('sale','Sales Order'),('locked','Locked'),('cancel','Cancelled')], string='Status',readonly=True)
 
 
 class mrp_production_inherit(models.Model):
@@ -34,6 +35,11 @@ class mrp_production_inherit(models.Model):
     sale_production_id = fields.Many2one('sale.order', string="Source Document")
     sale_order_ids = fields.One2many('production.sale.order','production_id', string="Sales Orders")
     customer_reference = fields.Char('Customer',copy=False, readonly=True)
+    product_qty = fields.Float(
+        'Quantity To Produce',
+        default=1.0, digits=dp.get_precision('Product Unit of Measure'),
+        readonly=True, required=True, track_visibility='onchange',
+        states={'confirmed': [('readonly', False)]})
 
     @api.model
     def _update_product_to_produce(self, production, qty):

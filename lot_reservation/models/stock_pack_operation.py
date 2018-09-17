@@ -20,8 +20,9 @@ class StockPackOperationLot(models.Model):
     @api.onchange('qty')
     def _check_qty_with_onhand(self):
         for lot in self:
-            if lot.qty > lot.onhand_qty:
-                raise ValidationError("You cannot proceed more than quantity on hand for lot: %s" % lot.lot_id.name)
+            if lot.operation_id.picking_id.picking_type_id.code != 'incoming':
+                if lot.qty > lot.onhand_qty:
+                    raise ValidationError("You cannot proceed more than quantity on hand for lot: %s" % lot.lot_id.name)
 
 
 class StockPackOperation(models.Model):
