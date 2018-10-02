@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo noupdate="1">
-
+<odoo>
     <record id="ir_cron_generate_barcode_products" model="ir.cron">
         <field name="name">Generate Barcode for Products</field>
         <field name="interval_number">1</field>
@@ -12,5 +11,4 @@
         <field eval="'product_generate_barcode'" name="function"/>
         <field eval="'()'" name="args"/>
     </record>
-
 </odoo>

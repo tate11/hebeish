@@ -8,7 +8,6 @@
         'views/sale_view.xml',
         'views/res_company.xml',
         'reports/sale_order_template.xml',
-        'data/cron_barcode_generator.xml',
     ],
     'demo': [
     ],
