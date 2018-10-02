@@ -49,7 +49,7 @@
                             <field name="acc_to" attrs="{'invisible': [('report_template', '=', 'micro_duct_pipe')]}"/>
 
                         </group>
-                        <group >
+                        <group>
                             <field name="get_data_from_messages" invisible="1"/>
                             <field name="first_approved_by" invisible="1"/>
                             <field name="second_approved_by" invisible="1"/>
