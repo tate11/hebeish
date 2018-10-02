@@ -221,13 +221,13 @@ class InspectionSheet(models.Model):
     @api.multi
     def action_first_approval(self):
         for order in self:
-            order.sudo().write({'state': 'waiting_second_approval', 'first_approved_by': self._uid})
+            order.write({'state': 'waiting_second_approval', 'first_approved_by': self._uid})
         return True
 
     @api.multi
     def action_second_approval(self):
         for order in self:
-            order.sudo().write({'state': 'approved', 'second_approved_by': self._uid})
+            order.write({'state': 'approved', 'second_approved_by': self._uid})
             sequence = self.env['ir.sequence'].sudo().next_by_code('inspection.sheet')
             order.certificate_no = sequence
             order.name = sequence

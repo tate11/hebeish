@@ -57,14 +57,14 @@ class stock_picking_approval(models.Model):
     @api.multi
     def action_approve(self):
         for order in self:
-            order.sudo().write({'state': 'approved', 'first_approved_by': self._uid})
+            order.write({'state': 'approved', 'first_approved_by': self._uid})
         return True
 
     @api.multi
     def do_new_transfer(self):
         res = super(stock_picking_approval, self).do_new_transfer()
         for rec in self:
-            rec.sudo().write({'second_approved_by': self._uid})
+            rec.write({'second_approved_by': self._uid})
         return res
 
     @api.depends('move_type', 'launch_pack_operations', 'move_lines.state', 'move_lines.picking_id',
