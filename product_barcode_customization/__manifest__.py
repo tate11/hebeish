@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "BI Product Barcode Customization",
-    'summary': "BI Product Barcode Customization",
+    'name': "Product Barcode Customization",
+    'summary': "Product Barcode Customization",
     'description': """ 
             This module generate product barcode.
      """,
-    'author': "BI Solutions Development Team",
     'category': 'Sales',
     'depends': ['product'],
     'data': [
