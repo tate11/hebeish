@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.addons import decimal_precision as dp
 from odoo.exceptions import ValidationError
 from odoo.tools.float_utils import float_round, float_compare
@@ -10,12 +10,23 @@ class StockPackOperationLot(models.Model):
     @api.depends('lot_id')
     def get_lot_onhand_qty(self):
         for pack_lot in self:
-            res = pack_lot.operation_id.product_id._compute_quantities_dict(pack_lot.lot_id.id,
-                                                                            self._context.get('owner_id'),
-                                                                            self._context.get('package_id'),
-                                                                            self._context.get('from_date'),
-                                                                            self._context.get('to_date'))
-            pack_lot.onhand_qty = res[pack_lot.operation_id.product_id.id]['qty_available']
+            total_onhand_qty = 0
+            active_id = self.env.context.get('active_pack_operation')
+            operation = self.env['stock.pack.operation'].browse(active_id)
+            if operation.picking_id.picking_type_id.default_location_src_id:
+                product_quants_objects = self.env['stock.quant'].search(
+                    [('product_id', '=', operation.product_id.id), ('lot_id', '=', pack_lot.lot_id.id), (
+                        'location_id', '=', operation.picking_id.picking_type_id.default_location_src_id.id)])
+                for product_quant in product_quants_objects:
+                    total_onhand_qty += product_quant.qty
+                pack_lot.onhand_qty = total_onhand_qty
+            else:
+                res = pack_lot.operation_id.product_id._compute_quantities_dict(pack_lot.lot_id.id,
+                                                                                self._context.get('owner_id'),
+                                                                                self._context.get('package_id'),
+                                                                                self._context.get('from_date'),
+                                                                                self._context.get('to_date'))
+                pack_lot.onhand_qty = res[pack_lot.operation_id.product_id.id]['qty_available']
 
     onhand_qty = fields.Float(compute="get_lot_onhand_qty", string='QTY on Hand', readonly=True)
 
@@ -29,6 +40,15 @@ class StockPackOperationLot(models.Model):
 
 class StockPackOperation(models.Model):
     _inherit = "stock.pack.operation"
+
+    @api.multi
+    @api.constrains('pack_lot_ids')
+    def check_done_qty(self):
+        for record in self:
+            if record.pack_lot_ids:
+                total_done = sum(record.pack_lot_ids.mapped('qty'))
+                if total_done > record.product_qty:
+                    raise ValidationError(_('Total done qty in lines must equal ' + str(record.product_qty)))
 
     @api.multi
     def save(self):
