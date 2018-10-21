@@ -13,13 +13,15 @@ class StockPackOperationLot(models.Model):
             total_onhand_qty = 0
             active_id = self.env.context.get('active_pack_operation')
             operation = self.env['stock.pack.operation'].browse(active_id)
-            if operation.picking_id.picking_type_id.default_location_src_id:
+            if operation.picking_id.picking_type_id.default_location_src_id and pack_lot.lot_id:
                 product_quants_objects = self.env['stock.quant'].search(
                     [('product_id', '=', operation.product_id.id), ('lot_id', '=', pack_lot.lot_id.id), (
                         'location_id', '=', operation.picking_id.picking_type_id.default_location_src_id.id)])
                 for product_quant in product_quants_objects:
                     total_onhand_qty += product_quant.qty
                 pack_lot.onhand_qty = total_onhand_qty
+            else:
+                pack_lot.onhand_qty = 0
 
     onhand_qty = fields.Float(compute="get_lot_onhand_qty", string='QTY on Hand', readonly=True)
 
