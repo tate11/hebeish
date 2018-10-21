@@ -20,13 +20,6 @@ class StockPackOperationLot(models.Model):
                 for product_quant in product_quants_objects:
                     total_onhand_qty += product_quant.qty
                 pack_lot.onhand_qty = total_onhand_qty
-            else:
-                res = pack_lot.operation_id.product_id._compute_quantities_dict(pack_lot.lot_id.id,
-                                                                                self._context.get('owner_id'),
-                                                                                self._context.get('package_id'),
-                                                                                self._context.get('from_date'),
-                                                                                self._context.get('to_date'))
-                pack_lot.onhand_qty = res[pack_lot.operation_id.product_id.id]['qty_available']
 
     onhand_qty = fields.Float(compute="get_lot_onhand_qty", string='QTY on Hand', readonly=True)
 
