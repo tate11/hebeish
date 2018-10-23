@@ -11,8 +11,7 @@ class StockPackOperationLot(models.Model):
     def get_lot_onhand_qty(self):
         for pack_lot in self:
             total_onhand_qty = 0
-            active_id = self.env.context.get('active_pack_operation')
-            operation = self.env['stock.pack.operation'].browse(active_id)
+            operation = self.env['stock.pack.operation'].browse(pack_lot.operation_id.id)
             if operation.picking_id.picking_type_id.default_location_src_id and pack_lot.lot_id:
                 product_quants_objects = self.env['stock.quant'].search(
                     [('product_id', '=', operation.product_id.id), ('lot_id', '=', pack_lot.lot_id.id), (
