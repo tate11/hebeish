@@ -32,7 +32,9 @@ class MrpProduction(models.Model):
         res = super(MrpProduction, self).write(vals)
         if 'bom_id' in vals.keys():
             self.move_raw_ids.action_cancel()
+            self.move_finished_ids.action_cancel()
             self.move_raw_ids.unlink()
+            self.move_finished_ids.unlink()
             self._generate_moves()
         return res
 
