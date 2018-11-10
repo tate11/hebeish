@@ -1,35 +1,35 @@
 # -*- coding: utf-8 -*-
+from odoo import models, fields, api
 
-from openerp import models, fields, api
 
 class sale_order_line_number(models.Model):
+    _inherit = 'sale.order.line'
 
-	_inherit='sale.order.line'
+    @api.depends('order_id.order_line')
+    @api.onchange('order_id.order_line')
+    def _get_line_numbers(self):
+        line_num = 1
+        if self.ids:
+            first_line_rec = self.browse(self.ids[0])
 
-	def _get_line_numbers(self):
-		line_num = 1	
-		if self.ids:
-			first_line_rec = self.browse(self.ids[0])
+            for line_rec in first_line_rec.order_id.order_line:
+                line_rec.line_no = line_num
+                line_num += 1
 
-			for line_rec in first_line_rec.order_id.order_line:
-				line_rec.line_no = line_num
-				line_num += 1
+    line_no = fields.Integer(compute='_get_line_numbers', string='Serial Number', store=True, readonly=False,
+                             default=False)
 
-	line_no = fields.Integer(compute='_get_line_numbers', string='Serial Number',readonly=False, default=False)
-	
 
 class purchase_order_line_number(models.Model):
+    _inherit = 'purchase.order.line'
 
-	_inherit='purchase.order.line'
+    def _get_line_numbers(self):
+        line_num = 1
+        if self.ids:
+            first_line_rec = self.browse(self.ids[0])
 
-	def _get_line_numbers(self):
-		line_num = 1	
-		if self.ids:
-			first_line_rec = self.browse(self.ids[0])
+            for line_rec in first_line_rec.order_id.order_line:
+                line_rec.line_no = line_num
+                line_num += 1
 
-			for line_rec in first_line_rec.order_id.order_line:
-				line_rec.line_no = line_num
-				line_num += 1
-
-
-	line_no = fields.Integer(compute='_get_line_numbers', string='Serial Number',readonly=False, default=False)
+    line_no = fields.Integer(compute='_get_line_numbers', string='Serial Number', readonly=False, default=False)
